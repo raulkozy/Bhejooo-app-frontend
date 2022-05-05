@@ -1,5 +1,7 @@
+import axios from 'axios';
+import { Formik } from 'formik';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import './common.css';
 
 const initialState = {
@@ -55,6 +57,10 @@ const initialState = {
   // ordersError: false
 }
 
+const API_URL = process.env.API_URL || '';
+export const REGISTER_URL = `${API_URL}/user/register`;
+export const OTP_URL = `${API_URL}/user/verifyMobileOtp`;
+
 const Register = () => {
 
   // const [userData, setUserData] = useState(initialState);
@@ -81,12 +87,15 @@ const Register = () => {
   const [orders, setOrders] = useState("");
   const [ordersError, setOrdersError] = useState("");
   const [errorFlag, setErrorFlag] = useState(false);
+  const [OTP, setOTP] = useState(false);
+  const [info, setInfo] = useState();
 
   const passwordValidation = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/;
   const emailValidator = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
   const mobileValidator = /^[6-9]\d{9}$/gi;
   const panValidator = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
   const numberValidator = /^\d*$/;
+  const history = useHistory();
 
   const handleFirstName = event => {
     console.log(event.target.value)
@@ -111,7 +120,7 @@ const Register = () => {
     setPassword(event.target.value);
     if (event.target.value !== "") {
       if (!passwordValidation.test(password)) {
-        setPasswordError("Password should be 6 characters long with atleast 1 uppercase, 1 lowercase, a digit and a special charater");
+        setPasswordError("Password should be 8 characters long with atleast 1 uppercase, 1 lowercase, a digit and a special charater");
       } else {
         setPasswordError("");
       }
@@ -289,7 +298,112 @@ const Register = () => {
               </div>
               <h2 style={{ "textAlign": "center" }}>New here ?</h2>
               <h6 className="font-weight-light" style={{ "textAlign": "center" }}>Signing up is easy. It only takes a few steps</h6>
-              <form className="pt-3">
+              {OTP?
+              (<>
+                <Formik
+                  initialValues={{ }}
+                  validate={values => {
+                    const errors = {};
+                    if (!values.otp) {
+                      errors.otp = 'Required';
+                    }
+                    return errors;
+                  }}
+                  onSubmit={(values, { setSubmitting }) => {
+                    setTimeout(() => {
+                      axios.post(OTP_URL,{...values, ...info}).then(res=>{
+                        setSubmitting(false);
+                        if(res.data)
+                          sessionStorage.setItem('access_token', res.data.access_token)
+                          history.push('/dashboard');
+                          //else return Promise.reject(res)
+                        })
+                    }, 400);
+                  }}
+                >
+                  {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    isSubmitting,
+                    /* and other goodies */
+                  }) => (
+                <form className="pt-3" onSubmit={handleSubmit}>
+                  <div style={{ "overflow-y": "scroll", "height": "300px" }}>
+                    <h5>OTP details :</h5>
+                    <div style={{ "display": "flex", "flexDirection": "row", "justifyContent": "space-between", "flexFlow": "row wrap" }}>
+                      <div className="form-group" style={{ "width": "30%" }}>
+                        <input type="text" name="otp" required className={`form-control form-control-lg border ${errors.otp ? "border-danger" : "border-secondary"}`} id="exampleInputUsername1" placeholder="OTP*"
+                          onChange={handleChange} />
+                        <p style={{ "color": "red" }}>{errors.otp}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                  {/* <Link className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" to="/dashboard">SIGN 
+                    UP</Link> */}
+                  <button type="submit" className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">Verify</button>
+                  </div>
+                </form>
+                  )}
+                </Formik>    
+              </>):
+              (<Formik
+                  initialValues={{ }}
+                  onSubmit={(values, { setSubmitting }) => {
+                    values = {
+                      "firstName": firstName,
+                      "lastName": lastName,
+                      "phoneNo": parseInt(mobileNo),
+                      "password": password,
+                      "email": email,
+                      "businessName": businessName,
+                      "typeOfBusiness": businessType,
+                      "businessAddress": {
+                        "address_lane1": businessAddress.split(',')[0],
+                        "address_lane2": businessAddress.split(',')[1],
+                        "landmark": businessAddress.split(',')[2],
+                        "Pin": businessAddress.split(',')[3],
+                        "city": businessAddress.split(',')[4],
+                        "state": businessAddress.split(',')[5]
+                      },
+                      "gstin": gstin,
+                      "pan": pan,
+                      "approxOrdersQuantity": orders,
+                      "documents": {
+                        "name": "string",
+                        "url": "string"
+                      }
+                    }
+                    setTimeout(() => {
+                      validateForm();
+                      axios.post(REGISTER_URL,values).then(res=>{
+                        setSubmitting(false);
+                        if(res.data)
+                          setInfo({
+                            "user_id": res.data["user_id"],
+                            "verify_id": res.data["verify_id"]
+                          })
+                          setOTP(true)
+                          //else return Promise.reject(res)
+                        })
+                    }, 400);
+                  }}
+                >
+                  {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    isSubmitting,
+                    /* and other goodies */
+                  }) => (
+              <form className="pt-3" onSubmit={handleSubmit}>
                 <div style={{ "overflow-y": "scroll", "height": "300px" }}>
                   <h5>Personal details :</h5>
                   <div style={{ "display": "flex", "flexDirection": "row", "justifyContent": "space-between", "flexFlow": "row wrap" }}>
@@ -406,12 +520,14 @@ const Register = () => {
                 <div className="mt-3">
                   {/* <Link className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" to="/dashboard">SIGN 
                     UP</Link> */}
-                  <div className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" onClick={validateForm}>SIGN UP</div>
+                  <button type="submit" className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">SIGN UP</button>
                 </div>
                 <div className="text-center mt-4 font-weight-light">
                   Already have an account? <Link to="/user-pages/login" className="text-primary">Login</Link>
                 </div>
               </form>
+                  )}
+              </Formik>)}
             </div>
           </div>
         </div>

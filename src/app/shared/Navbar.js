@@ -240,7 +240,7 @@ class Navbar extends Component {
                     </div>
                   </div>
                   <div className="preview-item-content">
-                    <p className="preview-subject mb-1"><Trans>Profile</Trans></p>
+                    <p className="preview-subject mb-1"><Link className="nav-link"><Trans>Profile</Trans></Link></p>
                   </div>
                 </Dropdown.Item>
                 {/* <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
@@ -261,7 +261,7 @@ class Navbar extends Component {
                     </div>
                   </div>
                   <div className="preview-item-content">
-                    <p className="preview-subject mb-1"><Trans>Log Out</Trans></p>
+                    <p className="preview-subject mb-1"><Link className="nav-link" to='/user-pages/login-1'><Trans>Log Out</Trans></Link></p>
                   </div>
                 </Dropdown.Item>
                 <Dropdown.Divider />

@@ -34,6 +34,7 @@ class Sidebar extends Component {
 
     const dropdownPaths = [
       { path: '/apps', state: 'appsMenuOpen' },
+      { path: '/orders', state: 'orderMenuOpen'},
       { path: '/basic-ui', state: 'basicUiMenuOpen' },
       { path: '/form-elements', state: 'formElementsMenuOpen' },
       { path: '/tables', state: 'tablesMenuOpen' },
@@ -122,17 +123,17 @@ class Sidebar extends Component {
             </Link>
           </li>
           <li className={this.isPathActive('/orders') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
-            <div className={this.state.orders ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('orders')} data-toggle="collapse">
+            <div className={this.state.orderMenuOpen ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('orderMenuOpen')} data-toggle="collapse">
               <span className="menu-icon">
                 <i className="mdi mdi-package-variant-closed"></i>
               </span>
               <span className="menu-title"><Trans>Orders</Trans></span>
               <i className="menu-arrow"></i>
             </div>
-            <Collapse in={this.state.orders}>
+            <Collapse in={this.state.orderMenuOpen}>
               <div>
                 <ul className="nav flex-column sub-menu">
-                  <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/buttons') ? 'nav-link active' : 'nav-link'} to="/basic-ui/buttons"><Trans>Manage Orders</Trans></Link></li>
+                  <li className="nav-item"> <Link className={this.isPathActive('/orders/manage-order') ? 'nav-link active' : 'nav-link'} to="/orders/manage-order"><Trans>Manage Orders</Trans></Link></li>
                   <li className="nav-item"> <Link className={this.isPathActive('/orders/create-order') ? 'nav-link active' : 'nav-link'} to="/orders/create-order"><Trans>Create Orders</Trans></Link></li>
                   {/* <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/typography') ? 'nav-link active' : 'nav-link'} to="/basic-ui/typography"><Trans>Typography</Trans></Link></li> */}
                 </ul>

@@ -1,0 +1,112 @@
+.proddetails{
+    display: flex;
+    flex-direction: column;
+    b{
+        margin-top: 5px;
+    }
+}
+.proddetailsMain{
+    display: flex;
+    justify-content: space-between;
+}
+.custdetsils{
+    p{
+        margin: 0;
+        font-size: 0.775rem;
+        margin-bottom: 5px;
+    }
+    a{
+        font-size: 0.775rem;
+    }
+}
+.btn.btn-fw {
+    min-width: 106px;
+    font-size: 0.775rem;
+}
+a.cancelText {
+    color: red;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+.manage-orders-wrapper{
+    table{
+        tbody{
+    //         max-height: calc(100vh - 291px);
+    //         display: block;
+    // max-height: 400px;
+    // overflow: hidden;
+    // overflow-y: scroll;
+        }
+    }
+}
+.topBar{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 22px;
+    h2{
+        font-size: 21px;
+    }
+}
+.manageorder-top-tabs{
+    a{
+        color: #6c7293;
+    font-size: 14px;
+    margin: 0 9px;
+    }
+}
+.pagination-wrap{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.page-link {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #6c7293;
+    background-color: #000000;
+    border: 1px solid #6c7293;
+}
+.showTables{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    p{
+        margin: 0;
+        margin-right: 9px;
+        color: #6c7293;
+    }
+}
+select.form-control {
+    height: 33px;
+}
+.filterByDate{
+    display: flex;
+    width: 24%;
+    margin-right: 8px;
+    select{
+        height: 37px;
+    }
+}
+.filterBar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.searchBar{
+    position: relative;
+    i{
+        position: absolute;
+    left: 5px;
+    top: 5px;
+    font-size: 21px;
+    color: #6c7293;
+    }
+    input{
+        padding-left: 35px;
+    }
+}

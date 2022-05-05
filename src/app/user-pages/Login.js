@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import './common.css';
+import { Formik } from 'formik';
+import axios from 'axios';
+
+
+const API_URL = process.env.API_URL || '';
+export const LOGIN_URL = `${API_URL}/auth/login`;
 
 export class Login extends Component {
   render() {
@@ -17,15 +23,39 @@ export class Login extends Component {
                 </div>
                 <h4>Hello! let's get started</h4>
                 <h6 className="font-weight-light">Sign in to continue.</h6>
-                <Form className="pt-3">
+                <Formik
+                  initialValues={{ }}
+                  onSubmit={(values, { setSubmitting }) => {
+                    setTimeout(() => {
+                      axios.post(LOGIN_URL,values).then(res=>{
+                        setSubmitting(false);
+                        if(res.data)
+                          sessionStorage.setItem('access_token', res.data.access_token)
+                          this.props.history.push('/dashboard')
+                          //else return Promise.reject(res)
+                        })
+                    }, 400);
+                  }}
+                >
+                  {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    isSubmitting,
+                    /* and other goodies */
+                  }) => (
+                <Form className="pt-3" onSubmit={handleSubmit}>
                   <Form.Group className="d-flex search-field">
-                    <Form.Control type="email" placeholder="Username" size="lg" className="h-auto" />
+                    <Form.Control type="tel" name="phone_no" placeholder="Username" size="lg" className="h-auto" onChange={handleChange} />
                   </Form.Group>
                   <Form.Group className="d-flex search-field">
-                    <Form.Control type="password" placeholder="Password" size="lg" className="h-auto" />
+                    <Form.Control type="password" name="password" placeholder="Password" size="lg" className="h-auto" onChange={handleChange} />
                   </Form.Group>
                   <div className="mt-3">
-                    <Link className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" to="/dashboard">SIGN IN</Link>
+                    <button className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" type="submit">SIGN IN</button>
                   </div>
                   <div className="my-2 d-flex justify-content-between align-items-center">
                     <div className="form-check">
@@ -43,9 +73,11 @@ export class Login extends Component {
                     </button>
                   </div> */}
                   <div className="text-center mt-4 font-weight-light">
-                    Don't have an account? <Link to="/user-pages/register" className="text-primary">Create</Link>
+                    Don't have an account? <Link to="/user-pages/register-1" className="text-primary">Create</Link>
                   </div>
                 </Form>
+                  )}
+                </Formik>
               </div>
             </div>
           </div>

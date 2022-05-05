@@ -5,6 +5,7 @@ import Spinner from '../app/shared/Spinner';
 
 const Dashboard = lazy(() => import('./dashboard/Dashboard'));
 const CreateOrders = lazy(() => import('./orders/CreateOrders'));
+const ManageOrders = lazy(() => import('./orders/ManageOrders'));
 
 const Buttons = lazy(() => import('./basic-ui/Buttons'));
 const Dropdowns = lazy(() => import('./basic-ui/Dropdowns'));
@@ -32,6 +33,7 @@ class AppRoutes extends Component {
         <Switch>
           <Route exact path="/dashboard" component={Dashboard} />
           <Route exact path="/orders/create-order" component={CreateOrders} />
+          <Route exact path="/orders/manage-order" component={ManageOrders} />
           <Route path="/basic-ui/buttons" component={Buttons} />
           <Route path="/basic-ui/dropdowns" component={Dropdowns} />
           <Route path="/basic-ui/typography" component={Typography} />
@@ -52,7 +54,7 @@ class AppRoutes extends Component {
           <Route path="/error-pages/error-500" component={Error500} />
 
 
-          <Redirect to="/dashboard" />
+          <Redirect to="/user-pages/login-1" />
         </Switch>
       </Suspense>
     );

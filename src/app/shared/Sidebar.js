@@ -35,6 +35,7 @@ class Sidebar extends Component {
     const dropdownPaths = [
       { path: '/apps', state: 'appsMenuOpen' },
       { path: '/orders', state: 'orderMenuOpen'},
+      { path: '/kyc', state: 'kycMenuOpen'},
       { path: '/basic-ui', state: 'basicUiMenuOpen' },
       { path: '/form-elements', state: 'formElementsMenuOpen' },
       { path: '/tables', state: 'tablesMenuOpen' },
@@ -139,6 +140,12 @@ class Sidebar extends Component {
                 </ul>
               </div>
             </Collapse>
+          </li>
+          <li className={this.isPathActive('/kyc') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
+            <Link className="nav-link" to="/kyc">
+              <span className="menu-icon"><i className="mdi mdi-speedometer"></i></span>
+              <span className="menu-title"><Trans>KYC</Trans></span>
+            </Link>
           </li>
           <li className={this.isPathActive('/basic-ui') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
             <div className={this.state.basicUiMenuOpen ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('basicUiMenuOpen')} data-toggle="collapse">

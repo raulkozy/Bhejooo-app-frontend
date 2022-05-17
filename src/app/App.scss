@@ -68,3 +68,46 @@
 @import "../assets/styles/sidebar";
 @import "../assets/styles/footer";
 @import "../assets/styles/layout";
+
+.toast-success{
+    .toast-header{
+      background-color: #50cd89;
+      font-size: 16px;
+      color: #fff;
+      padding: 0 6px;
+    }
+    button.close{
+      background-color: #50cd89;
+      border: none;
+      font-size: 23px;
+      color: #fff;
+      margin-left: 3rem !important;
+    }
+    .toast-body{
+      font-size: 16px;
+    }
+  }
+  .toast-danger{
+    top: 5rem;
+    z-index: 100;
+    position: fixed !important;
+    right: 1rem;
+  }
+  .toast-danger{
+    .toast-header{
+      background-color: #fa4d08;
+      font-size: 16px;
+      color: #fff;
+      padding: 0 6px;
+    }
+    button.close{
+      background-color: #fa4d08;
+      border: none;
+      font-size: 23px;
+      color: #fff;
+      margin-left: 3rem !important;
+    }
+    .toast-body{
+      font-size: 16px;
+    }
+  }

@@ -60,10 +60,11 @@ const initialState = {
 const API_URL = process.env.API_URL || '';
 export const REGISTER_URL = `${API_URL}/user/register`;
 export const OTP_URL = `${API_URL}/user/verifyMobileOtp`;
+export const PIN_DETAILS = `${API_URL}/general/pinDetails?pinCode=`;
 
 const Register = () => {
 
-  // const [userData, setUserData] = useState(initialState);
+  const [userData, setUserData] = useState(initialState);
   const [firstName, setFirstName] = useState("");
   const [firstNameError, setFirstNameError] = useState("");
   const [lastName, setLastName] = useState("");
@@ -287,6 +288,15 @@ const Register = () => {
     console.log("error flag:", errorFlag);
   }
 
+  const fetchpindetails=(pin)=>{
+    axios.get(PIN_DETAILS+pin).then(res=>{
+      const customer = {};
+      customer.city = res.data.city;
+      customer.state = res.data.state;
+      setUserData(customer);
+    })
+  }
+
   return (
     <div>
       <div className="d-flex align-items-center auth px-0 h-100 overlay">
@@ -353,6 +363,19 @@ const Register = () => {
               </>):
               (<Formik
                   initialValues={{ }}
+                  validate={(values) => {
+                    const errors = {};
+                    if(!values.businessAddress.address_lane1){
+                      errors.address_lane1 = true;
+                    } if(!values.businessAddress.address_lane2){
+                      errors.address_lane2 = true;
+                    } if(!values.businessAddress.Pin){
+                      errors.pin = true;
+                    } if(!values.businessAddress.landmark){
+                      errors.landmark = true;
+                    }
+                    return errors;
+                  }}
                   onSubmit={(values, { setSubmitting }) => {
                     values = {
                       "firstName": firstName,
@@ -362,17 +385,7 @@ const Register = () => {
                       "email": email,
                       "businessName": businessName,
                       "typeOfBusiness": businessType,
-                      "businessAddress": {
-                        "address_lane1": businessAddress.split(',')[0],
-                        "address_lane2": businessAddress.split(',')[1],
-                        "landmark": businessAddress.split(',')[2],
-                        "Pin": businessAddress.split(',')[3],
-                        "city": businessAddress.split(',')[4],
-                        "state": businessAddress.split(',')[5]
-                      },
-                      "gstin": gstin,
-                      "pan": pan,
-                      "approxOrdersQuantity": orders,
+                      "businessAddress": businessAddress,
                       "documents": {
                         "name": "string",
                         "url": "string"
@@ -457,7 +470,49 @@ const Register = () => {
                       </select>
                       <p style={{ "color": "red" }}>{businessTypeError}</p>
                     </div>
-                    <div className="form-group" style={{ "width": "100%" }}>
+                          <div className="form-group" style={{ "width": "30%" }}>
+                            <input type="text" name='businessAddress.address_lane1' className={`form-control form-control-lg border ${errors.address_lane1 ? "border-danger" : "border-secondary"}`} 
+                              id="exampleInputEmail1" placeholder="Flat No. & Building Name*" onChange={handleChange}
+                            // value={email} onChange={e => handleEmail(e)} 
+                            />
+                            {/* <p style={{ "color": "red" }}>{emailError}</p> */}
+                          </div>
+                          <div className="form-group" style={{ "width": "30%" }}>
+                            <input type="text" name='businessAddress.address_lane2' required className={`form-control form-control-lg border ${errors.address_lane2 ? "border-danger" : "border-secondary"}`} 
+                              id="exampleInputEmail1" placeholder="Road, Locality" onChange={handleChange}
+                            // value={mobileNo} onChange={e => handleMobileNumber(e)} 
+                            />
+                            {/* <p style={{ "color": "red" }}>{mobileNoError}</p> */}
+                          </div>
+                          <div className="form-group" style={{ "width": "30%" }}>
+                            <input type="number" name='businessAddress.Pin' required className={`form-control form-control-lg border ${errors.pin ? "border-danger" : "border-secondary"}`} 
+                              id="exampleInputEmail1" placeholder="Pin" onChange={(e)=>{handleChange(e);fetchpindetails(e.target.value)}}
+                            // value={mobileNo} onChange={e => handleMobileNumber(e)} 
+                            />
+                            {/* <p style={{ "color": "red" }}>{mobileNoError}</p> */}
+                          </div>
+                          <div className="form-group" style={{ "width": "30%" }}>
+                            <input type="text" name='businessAddress.landmark' required className={`form-control form-control-lg border ${errors.landmark ? "border-danger" : "border-secondary"}`} 
+                              id="exampleInputUsername1" placeholder="Landmark*" onChange={handleChange}
+                            // value={firstName} onChange={e => handleFirstName(e)} 
+                            />
+                            {/* <p style={{ "color": "red" }}>{firstNameError}</p> */}
+                          </div>
+                          <div className="form-group" style={{ "width": "30%" }}>
+                            <input type="text" name='businessAddress.city' required className={`form-control form-control-lg border ${errors.city ? "border-danger" : "border-secondary"}`} 
+                              id="exampleInputUsername2" placeholder="City*" value={userData.city}
+                            // value={lastName} onChange={e => handleLastName(e)} 
+                            />
+                            {/* <p style={{ "color": "red" }}>{lastNameError}</p> */}
+                          </div>
+                          <div className="form-group" style={{ "width": "30%" }}>
+                            <input type="text" name='businessAddress.state' className={`form-control form-control-lg border ${errors.state ? "border-danger" : "border-secondary"}`} 
+                              id="exampleInputPassword1" placeholder="State" value={userData.state}
+                            // value={password} onChange={e => handlePassword(e)} 
+                            />
+                            {/* <p style={{ "color": "red" }}>{passwordError}</p> */}
+                          </div>      
+                    {/* <div className="form-group" style={{ "width": "100%" }}>
                       <input type="text" className={`form-control form-control-lg border ${businessAddressError ? "border-danger" : "border-secondary"}`} id="businessAddress" placeholder="Business Address*" value={businessAddress}
                         onChange={e => handleBusinessAddress(e)} />
                       <p style={{ "color": "red" }}>{businessAddressError}</p>
@@ -475,7 +530,7 @@ const Register = () => {
                       <input type="text" required className={`form-control form-control-lg border ${ordersError ? "border-danger" : "border-secondary"}`} id="exampleInputEmail1" placeholder="Orders per day" value={orders}
                         onChange={e => handleOrders(e)} />
                       <p style={{ "color": "red" }}>{ordersError}</p>
-                    </div>
+                    </div> */}
                     <div className="form-group" style={{ "width": "30%" }}>
                       <input type="file" required className="form-control form-control-lg" id="file" placeholder="Documents" />
                     </div>

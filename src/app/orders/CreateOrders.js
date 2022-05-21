@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Trans } from 'react-i18next';
 import { Form, Toast } from 'react-bootstrap';
 import * as XLSX from "xlsx";
@@ -8,8 +8,12 @@ import { Formik } from 'formik';
 const API_URL = process.env.API_URL || '';
 export const CREATE_ORDER_BULK = `${API_URL}/order/create/bulk`;
 export const CREATE_ORDER = `${API_URL}/order/create`;
+export const PIN_DETAILS = `${API_URL}/general/pinDetails?pinCode=`;
+export const PRODUCT_CATEGORY = `${API_URL}/general/productCategoryList`;
 
 const CreateOrders = () => {
+    const [userData, setUserData] = useState({});
+    const [category, setCategory] = useState();
     const [toast, setToast] = useState(false);
     const [failtoast, setFailToast] = useState(false);
     const fileUploader = useRef();
@@ -74,6 +78,19 @@ const CreateOrders = () => {
           setToast(false);
           setFailToast(false);
       }
+      const fetchpindetails=(pin)=>{
+        axios.get(PIN_DETAILS+pin).then(res=>{
+          const customer = {};
+          customer.city = res.data.city;
+          customer.state = res.data.state;
+          setUserData(customer);
+        })
+      }
+      useEffect(()=>{
+          axios.get(PRODUCT_CATEGORY).then((res)=>{
+            setCategory(res.data)
+          })
+      },[])
     
     return (
         <>
@@ -105,10 +122,10 @@ const CreateOrders = () => {
                         <h1 className="title-text" style={{"font-size": "24px"}}>Single Order</h1> 
                         {/* </div> */}
                         <Formik
-                            initialValues={{}}
+                            initialValues={{order:{payment_node:'Prepaid'}}}
                             onSubmit={(values, { setSubmitting }) => {
                                 setTimeout(() => {
-                                axios.post(CREATE_ORDER, values).then(async (res)=>{
+                                axios.post(CREATE_ORDER, {...values, customer: {...values.customer,address:{...values.customer.address,...userData}}}).then(async (res)=>{
                                     setSubmitting(false);
                                     setToast(true);
                                 },err=>{
@@ -170,7 +187,7 @@ const CreateOrders = () => {
                                         </div>
                                         <div className="form-group" style={{ "width": "30%" }}>
                                             <input type="number" name='customer.address.Pin' required className={`form-control form-control-lg border`} 
-                                                id="exampleInputEmail1" placeholder="Pin" onChange={handleChange}
+                                                id="exampleInputEmail1" placeholder="Pin" onChange={(e)=>{handleChange(e);fetchpindetails(e.target.value)}}
                                             // value={mobileNo} onChange={e => handleMobileNumber(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{mobileNoError}</p> */}
@@ -184,14 +201,14 @@ const CreateOrders = () => {
                                         </div>
                                         <div className="form-group" style={{ "width": "30%" }}>
                                             <input type="text" name='customer.address.city' required className={`form-control form-control-lg border`} 
-                                                id="exampleInputUsername2" placeholder="City*" onChange={handleChange}
+                                                id="exampleInputUsername2" placeholder="City*" value={userData.city}
                                             // value={lastName} onChange={e => handleLastName(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{lastNameError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "30%" }}>
                                             <input type="text" name='customer.address.state' className={`form-control form-control-lg border `} 
-                                                id="exampleInputPassword1" placeholder="State" onChange={handleChange}
+                                                id="exampleInputPassword1" placeholder="State" value={userData.state}
                                             // value={password} onChange={e => handlePassword(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{passwordError}</p> */}
@@ -230,10 +247,15 @@ const CreateOrders = () => {
                                             {/* <p style={{ "color": "red" }}>{emailError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "45%" }}>
-                                            <input type="text" name='order.product_category' required className={`form-control form-control-lg border`} 
+                                            <select name='order.product_category' required className={`form-control form-control-lg border`} 
                                                 id="exampleInputEmail1" placeholder="Product Category" onChange={handleChange}
                                             // value={mobileNo} onChange={e => handleMobileNumber(e)} 
-                                            />
+                                            >
+                                                <option value="">Select One</option>
+                                                {category && category.map(ele=>
+                                                    <option value={ele.id}>{ele.category}</option>
+                                                )}
+                                            </select>
                                             {/* <p style={{ "color": "red" }}>{mobileNoError}</p> */}
                                         </div>
                                     </div>

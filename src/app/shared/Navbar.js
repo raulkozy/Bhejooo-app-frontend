@@ -74,7 +74,7 @@ class Navbar extends Component {
               </Dropdown> */}
             <Dropdown alignRight as="li" className="nav-item d-none d-lg-block">
               <Dropdown.Toggle className="nav-link btn btn-success create-new-button no-caret">
-                <i className="mdi mdi-wallet"></i> <Trans>7886.00</Trans>
+                <i className="mdi mdi-wallet"></i> <Trans>0.00</Trans>
               </Dropdown.Toggle>
 
               {/* <Dropdown.Menu className="navbar-dropdown preview-list create-new-dropdown-menu">
@@ -132,7 +132,7 @@ class Navbar extends Component {
                 <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
                   <div className="preview-thumbnail">
                     <div className="preview-icon bg-dark rounded-circle">
-                      <img src={require('../../assets/images/faces/face4.jpg')} alt="profile" className="rounded-circle profile-pic" />
+                      {/* <img src={require('../../assets/images/faces/face4.jpg')} alt="profile" className="rounded-circle profile-pic" /> */}
                     </div>
                   </div>
                   <div className="preview-item-content">
@@ -144,7 +144,7 @@ class Navbar extends Component {
                 <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
                   <div className="preview-thumbnail">
                     <div className="preview-icon bg-dark rounded-circle">
-                      <img src={require('../../assets/images/faces/face2.jpg')} alt="profile" className="rounded-circle profile-pic" />
+                      {/* <img src={require('../../assets/images/faces/face2.jpg')} alt="profile" className="rounded-circle profile-pic" /> */}
                     </div>
                   </div>
                   <div className="preview-item-content">
@@ -156,7 +156,7 @@ class Navbar extends Component {
                 <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
                   <div className="preview-thumbnail">
                     <div className="preview-icon bg-dark rounded-circle">
-                      <img src={require('../../assets/images/faces/face3.jpg')} alt="profile" className="rounded-circle profile-pic" />
+                      {/* <img src={require('../../assets/images/faces/face3.jpg')} alt="profile" className="rounded-circle profile-pic" /> */}
                     </div>
                   </div>
                   <div className="preview-item-content">
@@ -224,7 +224,7 @@ class Navbar extends Component {
             <Dropdown alignRight as="li" className="nav-item">
               <Dropdown.Toggle as="a" className="nav-link cursor-pointer no-caret">
                 <div className="navbar-profile">
-                  <img className="img-xs rounded-circle" src={require('../../assets/images/faces/face15.jpg')} alt="profile" />
+                  {/* <img className="img-xs rounded-circle" src={require('../../assets/images/faces/face15.jpg')} alt="profile" /> */}
                   <p className="mb-0 d-none d-sm-block navbar-profile-name"><Trans>Henry Klein</Trans></p>
                   <i className="mdi mdi-menu-down d-none d-sm-block"></i>
                 </div>

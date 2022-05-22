@@ -70,6 +70,13 @@
 @import "../assets/styles/layout";
 
 .toast-success{
+  top: 5rem;
+  z-index: 100;
+  position: fixed !important;
+  right: 1rem;
+}
+
+.toast-success{
     .toast-header{
       background-color: #50cd89;
       font-size: 16px;
@@ -81,7 +88,7 @@
       border: none;
       font-size: 23px;
       color: #fff;
-      margin-left: 3rem !important;
+      margin-left: 5rem !important;
     }
     .toast-body{
       font-size: 16px;

@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component, useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import './common.css';
 import { Formik } from 'formik';
@@ -9,8 +9,9 @@ import axios from 'axios';
 const API_URL = process.env.API_URL || '';
 export const LOGIN_URL = `${API_URL}/auth/login`;
 
-export class Login extends Component {
-  render() {
+const Login = () => {
+  const [error, setError] = useState();
+  const history = useHistory();
     return (
       <div>
         {/* <img src={require('../../assets/images/background/background.jpg')} alt="logo" /> */}
@@ -31,8 +32,12 @@ export class Login extends Component {
                         setSubmitting(false);
                         if(res.data)
                           sessionStorage.setItem('access_token', res.data.access_token)
-                          this.props.history.push('/dashboard')
+                          history.push('/dashboard')
                           //else return Promise.reject(res)
+                        },err=>{
+                          let errors = {};
+                          errors.message = 'Invalid username or password!';
+                          setError(errors);
                         })
                     }, 400);
                   }}
@@ -48,6 +53,7 @@ export class Login extends Component {
                     /* and other goodies */
                   }) => (
                 <Form className="pt-3" onSubmit={handleSubmit}>
+                  {error && (<p className='mb-lg-15 alert alert-danger'>{error.message}</p>)}
                   <Form.Group className="d-flex search-field">
                     <Form.Control type="tel" name="phone_no" placeholder="Username" size="lg" className="h-auto" onChange={handleChange} />
                   </Form.Group>
@@ -84,7 +90,6 @@ export class Login extends Component {
         </div>
       </div>
     )
-  }
 }
 
 export default Login

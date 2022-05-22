@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Trans } from 'react-i18next';
-import { Form, Toast } from 'react-bootstrap';
+import { Form, Table, Toast } from 'react-bootstrap';
 import * as XLSX from "xlsx";
 import axios from 'axios';
 import { Formik } from 'formik';
@@ -8,8 +8,14 @@ import { Formik } from 'formik';
 const API_URL = process.env.API_URL || '';
 export const CREATE_ORDER_BULK = `${API_URL}/order/create/bulk`;
 export const CREATE_ORDER = `${API_URL}/order/create`;
+export const PIN_DETAILS = `${API_URL}/general/pinDetails?pinCode=`;
+export const PRODUCT_CATEGORY = `${API_URL}/general/productCategoryList`;
+export const SHIPPING_RATE = `${API_URL}/calculator/shiping-rate`;
 
 const CreateOrders = () => {
+    const [courier, setCourier] = useState();
+    const [userData, setUserData] = useState({});
+    const [category, setCategory] = useState();
     const [toast, setToast] = useState(false);
     const [failtoast, setFailToast] = useState(false);
     const fileUploader = useRef();
@@ -74,6 +80,30 @@ const CreateOrders = () => {
           setToast(false);
           setFailToast(false);
       }
+      const fetchpindetails=(pin)=>{
+        axios.get(PIN_DETAILS+pin).then(res=>{
+          const customer = {};
+          customer.city = res.data.city;
+          customer.state = res.data.state;
+          setUserData(customer);
+        })
+      }
+      const fetchshippingrate=(pin,values) =>{
+          axios.get(SHIPPING_RATE+'?source='+values.customer.address.Pin+'&destination='+pin+'&payment_type='+values.order.payment_mode+'&weight='+values.shipment_details.weight+'&productValue='+values.order.product_price,{
+              headers:{
+                  'length': values.shipment_details.volumetric_weight.length,
+                  'width': values.shipment_details.volumetric_weight.width,
+                  'height': values.shipment_details.volumetric_weight.height
+              }
+          }).then(res=>{
+            setCourier(res.data.rates)
+          })
+      }
+      useEffect(()=>{
+          axios.get(PRODUCT_CATEGORY).then((res)=>{
+            setCategory(res.data)
+          })
+      },[])
     
     return (
         <>
@@ -105,10 +135,10 @@ const CreateOrders = () => {
                         <h1 className="title-text" style={{"font-size": "24px"}}>Single Order</h1> 
                         {/* </div> */}
                         <Formik
-                            initialValues={{}}
+                            initialValues={{order:{payment_mode:'Prepaid'}}}
                             onSubmit={(values, { setSubmitting }) => {
                                 setTimeout(() => {
-                                axios.post(CREATE_ORDER, values).then(async (res)=>{
+                                axios.post(CREATE_ORDER, {...values, customer: {...values.customer,address:{...values.customer.address,...userData}}}).then(async (res)=>{
                                     setSubmitting(false);
                                     setToast(true);
                                 },err=>{
@@ -170,7 +200,7 @@ const CreateOrders = () => {
                                         </div>
                                         <div className="form-group" style={{ "width": "30%" }}>
                                             <input type="number" name='customer.address.Pin' required className={`form-control form-control-lg border`} 
-                                                id="exampleInputEmail1" placeholder="Pin" onChange={handleChange}
+                                                id="exampleInputEmail1" placeholder="Pin" onChange={(e)=>{handleChange(e);fetchpindetails(e.target.value)}}
                                             // value={mobileNo} onChange={e => handleMobileNumber(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{mobileNoError}</p> */}
@@ -184,14 +214,14 @@ const CreateOrders = () => {
                                         </div>
                                         <div className="form-group" style={{ "width": "30%" }}>
                                             <input type="text" name='customer.address.city' required className={`form-control form-control-lg border`} 
-                                                id="exampleInputUsername2" placeholder="City*" onChange={handleChange}
+                                                id="exampleInputUsername2" placeholder="City*" value={userData.city}
                                             // value={lastName} onChange={e => handleLastName(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{lastNameError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "30%" }}>
                                             <input type="text" name='customer.address.state' className={`form-control form-control-lg border `} 
-                                                id="exampleInputPassword1" placeholder="State" onChange={handleChange}
+                                                id="exampleInputPassword1" placeholder="State" value={userData.state}
                                             // value={password} onChange={e => handlePassword(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{passwordError}</p> */}
@@ -230,10 +260,15 @@ const CreateOrders = () => {
                                             {/* <p style={{ "color": "red" }}>{emailError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "45%" }}>
-                                            <input type="text" name='order.product_category' required className={`form-control form-control-lg border`} 
+                                            <select name='order.product_category' required className={`form-control form-control-lg border`} 
                                                 id="exampleInputEmail1" placeholder="Product Category" onChange={handleChange}
                                             // value={mobileNo} onChange={e => handleMobileNumber(e)} 
-                                            />
+                                            >
+                                                <option value="">Select One</option>
+                                                {category && category.map(ele=>
+                                                    <option value={ele.id}>{ele.category}</option>
+                                                )}
+                                            </select>
                                             {/* <p style={{ "color": "red" }}>{mobileNoError}</p> */}
                                         </div>
                                     </div>
@@ -307,24 +342,42 @@ const CreateOrders = () => {
                                             {/* <p style={{ "color": "red" }}>{emailError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "45%" }}>
-                                            <input type="date" name='shipment_details.pickup_date' className={`form-control form-control-lg border `} 
-                                                id="exampleInputEmail1" placeholder="dd/mm/yyyy" onChange={handleChange}
+                                            <input type="number" name='shipment_details.pickup_date' className={`form-control form-control-lg border `} 
+                                                id="exampleInputEmail1" placeholder="Pickup Pin" onChange={(e)=>fetchshippingrate(e.target.value,values)}
                                             // value={email} onChange={e => handleEmail(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{emailError}</p> */}
                                         </div>
-                                        <div className="form-group" style={{ "width": "100%" }}>
-                                            <input type="text" name='shipment_details.carrier.carrier' required className={`form-control form-control-lg border`} 
-                                                id="exampleInputEmail1" placeholder="Carrier" onChange={handleChange}
-                                            // value={mobileNo} onChange={e => handleMobileNumber(e)} 
-                                            />
-                                            {/* <p style={{ "color": "red" }}>{mobileNoError}</p> */}
-                                        </div>
+                            <h4>Select Courier Partner:</h4>
+
+                                        <Table className="leader-board" striped hover variant="dark">
+                                            
+                                            <tbody>
+                                                {courier && courier.map(ele=>
+                                                <tr>
+                                                    <td>
+                                                    <div className="form-check">
+                                                        <label className="form-check-label">
+                                                            <input type="radio" className="form-check-input" name="shipment_details.carrier.carrier" id="optionsRadios1" value={ele.carrier} onChange={handleChange} />
+                                                            <i className="input-helper"></i>
+                                                            <div style={{ "display": "flex", "flexDirection": "row", "paddingLeft": "10px" }}>
+                                                                <span className="menu-title" style={{ "paddingLeft": "10px", color: "#FFF" }}><Trans>{ele.carrier}</Trans></span>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                    </td>
+                                                    <td>
+                                                        <span className="menu-icon"><i className="mdi mdi-currency-inr text-success"></i></span>
+                                                        <span className="menu-title" style={{ "paddingLeft": "10px", color: "#FFF" }}><Trans>{ele.rate}</Trans></span>
+                                                    </td>
+                                                </tr>)}
+                                            </tbody>
+                                        </Table>
                                     </div>
                                 </div>
 
 
-                            <h4>Pickup Details:</h4>
+                            {/* <h4>Pickup Details:</h4>
                                 <div>
                                     <div style={{ "display": "flex", "flexDirection": "row", "justifyContent": "space-between", "flexFlow": "row wrap" }}>
                                         <div className="form-group" style={{ "width": "100%" }}>
@@ -332,10 +385,10 @@ const CreateOrders = () => {
                                                 id="exampleInputUsername1" placeholder="Address ID*" onChange={handleChange}
                                             // value={firstName} onChange={e => handleFirstName(e)} 
                                             />
-                                            {/* <p style={{ "color": "red" }}>{firstNameError}</p> */}
                                         </div>
                                     </div>
-                                </div>    
+                                </div>   */}
+                            <br />      
                             <button className={'btn btn-primary btn-lg'} type='submit'>Order</button>
                             </div>
                             </form>

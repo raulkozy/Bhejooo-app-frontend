@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Trans } from 'react-i18next';
-import { Form, Table, Toast } from 'react-bootstrap';
+import { Button, Card, Form, Table, Toast } from 'react-bootstrap';
 import * as XLSX from "xlsx";
 import axios from 'axios';
 import { Formik } from 'formik';
@@ -11,8 +11,10 @@ export const CREATE_ORDER = `${API_URL}/order/create`;
 export const PIN_DETAILS = `${API_URL}/general/pinDetails?pinCode=`;
 export const PRODUCT_CATEGORY = `${API_URL}/general/productCategoryList`;
 export const SHIPPING_RATE = `${API_URL}/calculator/shiping-rate`;
+export const PICKUP_ADDRESS = `${API_URL}/address/pickupAddress`;
 
 const CreateOrders = () => {
+    const [addressList, setAddressList] = useState();
     const [courier, setCourier] = useState();
     const [userData, setUserData] = useState({});
     const [category, setCategory] = useState();
@@ -103,6 +105,9 @@ const CreateOrders = () => {
           axios.get(PRODUCT_CATEGORY).then((res)=>{
             setCategory(res.data)
           })
+          axios.get(PICKUP_ADDRESS).then(res=>{
+              setAddressList(res.data)
+          })
       },[])
     
     return (
@@ -154,6 +159,7 @@ const CreateOrders = () => {
                                 handleChange,
                                 handleBlur,
                                 handleSubmit,
+                                setFieldValue,
                                 isSubmitting,
                                 /* and other goodies */
                             }) => (
@@ -375,8 +381,23 @@ const CreateOrders = () => {
                                         </Table>
                                     </div>
                                 </div>
+                                <br />
 
-
+                            <h4>Address Details:</h4>
+                                <div>
+                                {addressList && addressList.map(ele=>
+                                <Card className='mb-2' style={{ width: '18rem', border: values.pickup_details && values.pickup_details.address_id==ele.id?'0.5px solid #fff':'' }}>
+                                <Card.Body>
+                                    <Card.Title>{ele.address_lane1}</Card.Title>
+                                    <Card.Text>
+                                    {ele.address_lane1},&nbsp;
+                                    {ele.address_lane2},&nbsp;
+                                    {ele.city},&nbsp;{ele.state}-{ele.Pin}
+                                    </Card.Text>
+                                    <Button variant="primary" onClick={()=>setFieldValue('pickup_details.address_id',ele.id)}>Select</Button>
+                                </Card.Body>
+                                </Card>)}
+                                </div>
                             {/* <h4>Pickup Details:</h4>
                                 <div>
                                     <div style={{ "display": "flex", "flexDirection": "row", "justifyContent": "space-between", "flexFlow": "row wrap" }}>

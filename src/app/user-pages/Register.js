@@ -57,7 +57,7 @@ const initialState = {
   // ordersError: false
 }
 
-const API_URL = process.env.API_URL || 'https://api.bhejooo.com/';
+const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const REGISTER_URL = `${API_URL}/user/register`;
 export const OTP_URL = `${API_URL}/user/verifyMobileOtp`;
 export const PIN_DETAILS = `${API_URL}/general/pinDetails?pinCode=`;

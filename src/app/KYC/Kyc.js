@@ -6,7 +6,7 @@ import Pagination from "react-bootstrap/Pagination";
 import axios from 'axios';
 import { Formik } from 'formik';
 
-const API_URL = process.env.API_URL || 'http://ec2-15-207-99-109.ap-south-1.compute.amazonaws.com';
+const API_URL = process.env.API_URL || 'https://api.bhejooo.com/';
 export const KYC_URL = `${API_URL}/user/kyc`;
 
 const Kyc = () => {

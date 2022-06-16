@@ -5,7 +5,7 @@ import { Form } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import axios from "axios";
 
-const API_URL = process.env.API_URL || 'http://ec2-15-207-99-109.ap-south-1.compute.amazonaws.com';
+const API_URL = process.env.API_URL || 'https://api.bhejooo.com/';
 export const ORDER_URL = `${API_URL}/order/list`;
 
 const ManageOrders = () => {

@@ -5,7 +5,7 @@ import * as XLSX from "xlsx";
 import axios from 'axios';
 import { Formik } from 'formik';
 
-const API_URL = process.env.API_URL || 'http://ec2-15-207-99-109.ap-south-1.compute.amazonaws.com';
+const API_URL = process.env.API_URL || 'https://api.bhejooo.com/';
 export const CREATE_ORDER_BULK = `${API_URL}/order/create/bulk`;
 export const CREATE_ORDER = `${API_URL}/order/create`;
 export const PIN_DETAILS = `${API_URL}/general/pinDetails?pinCode=`;

@@ -57,8 +57,8 @@ class Sidebar extends Component {
     return (
       <nav className="sidebar sidebar-offcanvas" id="sidebar">
         <div className="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-          {/* <a className="sidebar-brand brand-logo" href="index.html"><img src={require('../../assets/images/logo.svg')} alt="logo" /></a>
-          <a className="sidebar-brand brand-logo-mini" href="index.html"><img src={require('../../assets/images/logo-mini.svg')} alt="logo" /></a> */}
+          <a className="sidebar-brand brand-logo" href=""><img src={require('../../assets/images/Blogo.png')} alt="logo" /><span className="logo">hejooo</span></a>
+          <a className="sidebar-brand brand-logo-mini" href=""><img src={require('../../assets/images/Blogo.png')} alt="logo" /></a>
         </div>
         <ul className="nav">
           <li className="nav-item profile">
@@ -147,7 +147,7 @@ class Sidebar extends Component {
               <span className="menu-title"><Trans>KYC</Trans></span>
             </Link>
           </li>
-          <li className={this.isPathActive('/basic-ui') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
+          {/* <li className={this.isPathActive('/basic-ui') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
             <div className={this.state.basicUiMenuOpen ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('basicUiMenuOpen')} data-toggle="collapse">
               <span className="menu-icon">
                 <i className="mdi mdi-laptop"></i>
@@ -155,7 +155,6 @@ class Sidebar extends Component {
               <span className="menu-title"><Trans>Basic UI Elements</Trans></span>
               <i className="menu-arrow"></i>
             </div>
-            {/* //////////////////////////// */}
             <Collapse in={this.state.basicUiMenuOpen}>
               <div>
                 <ul className="nav flex-column sub-menu">
@@ -165,8 +164,7 @@ class Sidebar extends Component {
                 </ul>
               </div>
             </Collapse>
-            {/* //////////////////////////// */}
-          </li>
+          </li> */}
           <li className={this.isPathActive('/basic-ui') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
             <div className={this.state.shipments ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('shipments')} data-toggle="collapse">
               <span className="menu-icon">
@@ -262,7 +260,7 @@ class Sidebar extends Component {
             </Collapse>
           </li>
           {/* ///////////////////////////////// */}
-          <li className={this.isPathActive('/form-elements') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
+          {/* <li className={this.isPathActive('/form-elements') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
             <div className={this.state.formElementsMenuOpen ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('formElementsMenuOpen')} data-toggle="collapse">
               <span className="menu-icon">
                 <i className="mdi mdi-playlist-play"></i>
@@ -277,9 +275,9 @@ class Sidebar extends Component {
                 </ul>
               </div>
             </Collapse>
-          </li>
+          </li> */}
           {/* ///////////////////////////////// */}
-          <li className={this.isPathActive('/tables') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
+          {/* <li className={this.isPathActive('/tables') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
             <div className={this.state.tablesMenuOpen ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('tablesMenuOpen')} data-toggle="collapse">
               <span className="menu-icon">
                 <i className="mdi mdi-table-large"></i>
@@ -294,8 +292,8 @@ class Sidebar extends Component {
                 </ul>
               </div>
             </Collapse>
-          </li>
-          <li className={this.isPathActive('/charts') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
+          </li> */}
+          {/* <li className={this.isPathActive('/charts') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
             <div className={this.state.chartsMenuOpen ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('chartsMenuOpen')} data-toggle="collapse">
               <span className="menu-icon">
                 <i className="mdi mdi-chart-bar"></i>
@@ -310,9 +308,9 @@ class Sidebar extends Component {
                 </ul>
               </div>
             </Collapse>
-          </li>
+          </li> */}
           {/* ///////////////////////////////////////// */}
-          <li className={this.isPathActive('/icons') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
+          {/* <li className={this.isPathActive('/icons') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
             <div className={this.state.iconsMenuOpen ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('iconsMenuOpen')} data-toggle="collapse">
               <span className="menu-icon">
                 <i className="mdi mdi-contacts"></i>
@@ -327,7 +325,7 @@ class Sidebar extends Component {
                 </ul>
               </div>
             </Collapse>
-          </li>
+          </li> */}
           {/* ///////////////////////////////////// */}
           <li className={this.isPathActive('/user-pages') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
             <div className={this.state.userPagesMenuOpen ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('userPagesMenuOpen')} data-toggle="collapse">
@@ -349,7 +347,7 @@ class Sidebar extends Component {
           <li className="nav-item nav-category">
             <span className="nav-link"><Trans>More</Trans></span>
           </li>
-          <li className={this.isPathActive('/error-pages') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
+          {/* <li className={this.isPathActive('/error-pages') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
             <div className={this.state.errorPagesMenuOpen ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('errorPagesMenuOpen')} data-toggle="collapse">
               <span className="menu-icon">
                 <i className="mdi mdi-lock"></i>
@@ -365,7 +363,7 @@ class Sidebar extends Component {
                 </ul>
               </div>
             </Collapse>
-          </li>
+          </li> */}
           <li className="nav-item menu-items">
             <a className="nav-link" href="http://bootstrapdash.com/demo/corona-react-free/documentation/documentation.html" rel="noopener noreferrer" target="_blank">
               <span className="menu-icon">

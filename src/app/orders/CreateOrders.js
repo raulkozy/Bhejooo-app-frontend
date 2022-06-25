@@ -133,11 +133,11 @@ const CreateOrders = () => {
             </div>
         </div>
         <div>
-            <div className="d-flex align-items-center auth px-0 h-100">
+            <div className="align-items-center auth px-0 h-100">
                 <div className="row w-100 mx-0">
                     <div className="col-lg-12 mx-auto">
                         {/* <div className="card text-left py-5 px-4 px-sm-5"> */}
-                        <h1 className="title-text" style={{"font-size": "24px"}}>Single Order</h1> 
+                        <h1 className="title-text" style={{fontSize: "24px"}}>Single Order</h1> 
                         {/* </div> */}
                         <Formik
                             initialValues={{order:{payment_mode:'Prepaid'}}}
@@ -212,8 +212,8 @@ const CreateOrders = () => {
                                             {/* <p style={{ "color": "red" }}>{mobileNoError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "30%" }}>
-                                            <input type="text" name='customer.address.landmark' required className={`form-control form-control-lg border`}
-                                                id="exampleInputUsername1" placeholder="Landmark*" onChange={handleChange}
+                                            <input type="text" name='customer.address.landmark' className={`form-control form-control-lg border`}
+                                                id="exampleInputUsername1" placeholder="Landmark" onChange={handleChange}
                                             // value={firstName} onChange={e => handleFirstName(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{firstNameError}</p> */}
@@ -359,7 +359,7 @@ const CreateOrders = () => {
                                         <Table className="leader-board" striped hover variant="dark">
                                             
                                             <tbody>
-                                                {courier && courier.map(ele=>
+                                                {courier && courier.map(ele=>(
                                                 <tr>
                                                     <td>
                                                     <div className="form-check">
@@ -367,16 +367,16 @@ const CreateOrders = () => {
                                                             <input type="radio" className="form-check-input" name="shipment_details.carrier.carrier" id="optionsRadios1" value={ele.carrier} onChange={handleChange} />
                                                             <i className="input-helper"></i>
                                                             <div style={{ "display": "flex", "flexDirection": "row", "paddingLeft": "10px" }}>
-                                                                <span className="menu-title" style={{ "paddingLeft": "10px", color: "#FFF" }}><Trans>{ele.carrier}</Trans></span>
+                                                                <span className="menu-title" style={{ "paddingLeft": "10px", color: "#FFF" }}>{ele.carrier}</span>
                                                             </div>
                                                         </label>
                                                     </div>
                                                     </td>
                                                     <td>
                                                         <span className="menu-icon"><i className="mdi mdi-currency-inr text-success"></i></span>
-                                                        <span className="menu-title" style={{ "paddingLeft": "10px", color: "#FFF" }}><Trans>{ele.rate}</Trans></span>
+                                                        <span className="menu-title" style={{ "paddingLeft": "10px", color: "#FFF" }}>{ele.rate}</span>
                                                     </td>
-                                                </tr>)}
+                                                </tr>))}
                                             </tbody>
                                         </Table>
                                     </div>
@@ -388,13 +388,20 @@ const CreateOrders = () => {
                                 {addressList && addressList.map(ele=>
                                 <Card className='mb-2' style={{ width: '18rem', border: values.pickup_details && values.pickup_details.address_id==ele.id?'0.5px solid #fff':'' }}>
                                 <Card.Body>
-                                    <Card.Title>{ele.address_lane1}</Card.Title>
+                                    <div className="form-check">
+                                        <label className="form-check-label">
+                                            <input type="radio" className="form-check-input" name="pickup_details.address_id" id="optionsRadios1" value={ele.id} onChange={handleChange} />
+                                            <i className="input-helper"></i>
+                                            <div style={{ "display": "flex", "flexDirection": "row", "paddingLeft": "10px" }}>
+                                                <Card.Title>{ele.address_lane1}</Card.Title>
+                                            </div>
+                                        </label>
+                                    </div>
                                     <Card.Text>
                                     {ele.address_lane1},&nbsp;
                                     {ele.address_lane2},&nbsp;
                                     {ele.city},&nbsp;{ele.state}-{ele.Pin}
                                     </Card.Text>
-                                    <Button variant="primary" onClick={()=>setFieldValue('pickup_details.address_id',ele.id)}>Select</Button>
                                 </Card.Body>
                                 </Card>)}
                                 </div>

@@ -316,6 +316,30 @@ const CreateOrders = () => {
                                 </div>
                             </Form.Group>
 
+
+                            <h4>Address Details:</h4>
+                                <div className="row">
+                                {addressList && addressList.map(ele=>
+                                <Card className='mb-2' style={{ width: '18rem', border: values.pickup_details && values.pickup_details.address_id==ele.id?'0.5px solid #fff':'' }}>
+                                <Card.Body>
+                                    <div className="form-check">
+                                        <label className="form-check-label">
+                                            <input type="radio" className="form-check-input" name="pickup_details.address_id" id="optionsRadios1" value={ele.id} onChange={handleChange} />
+                                            <i className="input-helper"></i>
+                                            <div style={{ "display": "flex", "flexDirection": "row", "paddingLeft": "10px" }}>
+                                                <Card.Title>{ele.address_lane1}</Card.Title>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <Card.Text>
+                                    {ele.address_lane1},&nbsp;
+                                    {ele.address_lane2},&nbsp;
+                                    {ele.city},&nbsp;{ele.state}-{ele.Pin}
+                                    </Card.Text>
+                                </Card.Body>
+                                </Card>)}
+                                </div>
+
                             <h4>Shipment Details:</h4>
                                 <div>
                                     <div style={{ "display": "flex", "flexDirection": "row", "justifyContent": "space-between", "flexFlow": "row wrap" }}>
@@ -383,28 +407,7 @@ const CreateOrders = () => {
                                 </div>
                                 <br />
 
-                            <h4>Address Details:</h4>
-                                <div>
-                                {addressList && addressList.map(ele=>
-                                <Card className='mb-2' style={{ width: '18rem', border: values.pickup_details && values.pickup_details.address_id==ele.id?'0.5px solid #fff':'' }}>
-                                <Card.Body>
-                                    <div className="form-check">
-                                        <label className="form-check-label">
-                                            <input type="radio" className="form-check-input" name="pickup_details.address_id" id="optionsRadios1" value={ele.id} onChange={handleChange} />
-                                            <i className="input-helper"></i>
-                                            <div style={{ "display": "flex", "flexDirection": "row", "paddingLeft": "10px" }}>
-                                                <Card.Title>{ele.address_lane1}</Card.Title>
-                                            </div>
-                                        </label>
-                                    </div>
-                                    <Card.Text>
-                                    {ele.address_lane1},&nbsp;
-                                    {ele.address_lane2},&nbsp;
-                                    {ele.city},&nbsp;{ele.state}-{ele.Pin}
-                                    </Card.Text>
-                                </Card.Body>
-                                </Card>)}
-                                </div>
+
                             {/* <h4>Pickup Details:</h4>
                                 <div>
                                     <div style={{ "display": "flex", "flexDirection": "row", "justifyContent": "space-between", "flexFlow": "row wrap" }}>

@@ -91,7 +91,7 @@ const Register = () => {
   const [OTP, setOTP] = useState(false);
   const [info, setInfo] = useState();
 
-  const passwordValidation = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/;
+  const passwordValidation = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   const emailValidator = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
   const mobileValidator = /^[6-9]\d{9}$/gi;
   const panValidator = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
@@ -120,7 +120,7 @@ const Register = () => {
   const handlePassword = event => {
     setPassword(event.target.value);
     if (event.target.value !== "") {
-      if (!passwordValidation.test(password)) {
+      if (!passwordValidation.test(event.target.value)) {
         setPasswordError("Password should be 8 characters long with atleast 1 uppercase, 1 lowercase, a digit and a special charater");
       } else {
         setPasswordError("");
@@ -575,7 +575,8 @@ const Register = () => {
                 <div className="mt-3">
                   {/* <Link className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" to="/dashboard">SIGN 
                     UP</Link> */}
-                  <button type="submit" className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">SIGN UP</button>
+                  <button type="submit" className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" disabled={isSubmitting}>
+                  {isSubmitting && (<i class="fa fa-spinner fa-spin"></i>)}SIGN UP</button>
                 </div>
                 <div className="text-center mt-4 font-weight-light">
                   Already have an account? <Link to="/user-pages/login" className="text-primary">Login</Link>

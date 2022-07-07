@@ -15,6 +15,7 @@ const Login = () => {
   const [error, setError] = useState();
   const [selection, setSelection] = useState();
   const [verify_id, setVerify_id] = useState();
+  const [togglePassword, setTogglePassword] = useState(true);
   const history = useHistory();
   const GENERATE_OTP = (phone_no) => {
     setSelection('OTP');
@@ -47,6 +48,7 @@ const Login = () => {
                         setSubmitting(false);
                         if(res.data)
                           sessionStorage.setItem('access_token', res.data.access_token)
+                          sessionStorage.setItem('username',res.data.user)
                           history.push('/dashboard')
                           //else return Promise.reject(res)
                         },err=>{
@@ -97,7 +99,8 @@ const Login = () => {
                       </Form.Group>)}
                       {selection && selection === 'password' && (
                       <Form.Group className="d-flex search-field">
-                        <Form.Control type="password" name="password" placeholder="Password" size="lg" className="h-auto" onChange={handleChange} />
+                        <Form.Control type={togglePassword?"password":"text"} name="password" placeholder="Password" size="lg" className="h-auto" onChange={handleChange} />
+                        <i className="far fa-eye eye" id="togglePassword" onClick={()=>setTogglePassword(!togglePassword)}></i>
                       </Form.Group>)}
                       {selection && selection === 'OTP' && (
                       <Form.Group className="d-flex search-field">

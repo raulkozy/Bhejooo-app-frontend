@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Kyc.scss";
 import { Trans } from "react-i18next";
 import { Form, Toast } from "react-bootstrap";
@@ -8,14 +8,21 @@ import { Formik } from 'formik';
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const KYC_URL = `${API_URL}/user/kyc`;
+export const BANK_LIST = `${API_URL}/general/bankList`;
 
 const Kyc = () => {
   const [toast, setToast] = useState(false);
   const [failtoast, setFailToast] = useState(false);
+  const [banklist, setbanklist] = useState();
   const navigate = () => {
     setToast(false);
     setFailToast(false);
   }
+  useEffect(()=>{
+    axios.get(BANK_LIST).then(res=>{
+      setbanklist(res.data);
+    })
+  },[])
   return (
     // <div className="row">
     //     <div className="col-12 grid-margin">
@@ -108,8 +115,9 @@ const Kyc = () => {
                     <label for="exampleInputEmail1">Bank <sup>*</sup></label>
                     <select required name="bank_name" onChange={handleChange} className="form-control" id="exampleSelectGender">
                       <option>Select One</option>
-                      <option value={'SBI'}>SBI</option>
-                      <option value={'HDFC'}>HDFC</option>
+                      {banklist && banklist.map(ele=>
+                        <option value={ele}>{ele}</option>
+                      )}
                     </select>
                   </div>
                 </div>

@@ -431,7 +431,7 @@ const Register = () => {
                       <p style={{ "color": "red" }}>{lastNameError}</p>
                     </div>
                     <div className="form-group" style={{ "width": "30%" }}>
-                      <input type="password" className={`form-control form-control-lg border ${passwordError ? "border-danger" : "border-secondary"}`} id="exampleInputPassword1" placeholder="Enter Password" value={password}
+                      <input type="password" required className={`form-control form-control-lg border ${passwordError ? "border-danger" : "border-secondary"}`} id="exampleInputPassword1" placeholder="Enter Password*" value={password}
                         onChange={e => handlePassword(e)} />
                       <p style={{ "color": "red" }}>{passwordError}</p>
                     </div>
@@ -532,7 +532,7 @@ const Register = () => {
                       <p style={{ "color": "red" }}>{ordersError}</p>
                     </div> */}
                     <div className="form-group" style={{ "width": "30%" }}>
-                      <input type="file" required className="form-control form-control-lg" id="file" placeholder="Documents" />
+                      <input type="file" className="form-control form-control-lg" id="file" placeholder="Documents" />
                     </div>
                   </div>
                   {/* <h5>Bank Details :</h5>

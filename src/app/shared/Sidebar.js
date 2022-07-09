@@ -58,7 +58,7 @@ class Sidebar extends Component {
       <nav className="sidebar sidebar-offcanvas" id="sidebar">
         <div className="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
           <a className="sidebar-brand brand-logo" href=""><img src={require('../../assets/images/Blogo.png')} alt="logo" /><span className="logo">hejooo</span></a>
-          <a className="sidebar-brand brand-logo-mini" href=""><img src={require('../../assets/images/Blogo.png')} alt="logo" /></a>
+          <a className="sidebar-brand brand-logo-mini" href="!#" onClick={evt => evt.preventDefault()}><img src={require('../../assets/images/Blogo.png')} alt="logo" /></a>
         </div>
         <ul className="nav">
           <li className="nav-item profile">
@@ -100,14 +100,14 @@ class Sidebar extends Component {
                     </div>
                   </a>
                   <div className="dropdown-divider"></div>
-                  <a href="!#" className="dropdown-item preview-item" onClick={evt => evt.preventDefault()}>
+                  <a href="" className="dropdown-item preview-item">
                     <div className="preview-thumbnail">
                       <div className="preview-icon bg-dark rounded-circle">
                         <i className="mdi mdi-calendar-today text-success"></i>
                       </div>
                     </div>
                     <div className="preview-item-content">
-                      <p className="preview-subject ellipsis mb-1 text-small"><Trans>To-do list</Trans></p>
+                      <p className="preview-subject ellipsis mb-1 text-small" >Logout</p>
                     </div>
                   </a>
                 </Dropdown.Menu>

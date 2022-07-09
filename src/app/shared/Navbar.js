@@ -84,8 +84,8 @@ const Navbar = () => {
                 </Dropdown.Menu>
               </Dropdown> */}
             <Dropdown alignRight as="li" className="nav-item d-none d-lg-block">
-              <Dropdown.Toggle className="nav-link btn btn-success create-new-button no-caret">
-                <i className="mdi mdi-wallet"></i> {parseInt(wallet).toFixed(2)}
+              <Dropdown.Toggle className="nav-link btn btn-primary create-new-button no-caret">
+                <i className="mdi mdi-currency-inr"></i> {parseInt(wallet).toFixed(2)}
               </Dropdown.Toggle>
 
               {/* <Dropdown.Menu className="navbar-dropdown preview-list create-new-dropdown-menu">
@@ -128,7 +128,7 @@ const Navbar = () => {
               </Dropdown.Menu> */}
             </Dropdown>
             <Dropdown alignRight as="li" className="nav-item d-none d-lg-block">
-              <Dropdown.Toggle className="nav-link btn btn-primary create-new-button no-caret">
+              <Dropdown.Toggle className="nav-link btn btn-warning create-new-button no-caret">
                 <i className="mdi mdi-wallet"></i> {credit}
               </Dropdown.Toggle>
             </Dropdown>

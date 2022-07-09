@@ -132,11 +132,12 @@ const ManageOrders = () => {
                           </td>
                           <td> ₹{ele.product_price * ele.product_quantity} / - cod </td>
                           <td>
+                            {ele.customer && (
                             <div className="custdetsils">
-                              <p>{ele.user.first_name} {ele.user.last_name}</p>
-                              <p>Ph: {ele.user.phone_no}</p>
+                              <p>{ele.customer.name}</p>
+                              <p>Ph: {ele.customer.mobile_no}</p>
                               <a href="#">VIEW / EDIT DETAILS</a>
-                            </div>
+                            </div>)}
                           </td>
                           <td>Approved</td>
                           <td>

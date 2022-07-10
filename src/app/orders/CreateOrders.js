@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Trans } from 'react-i18next';
-import { Button, Card, Form, Table, Toast } from 'react-bootstrap';
+import { Button, Card, Form, Modal, Table, Toast } from 'react-bootstrap';
 import * as XLSX from "xlsx";
 import axios from 'axios';
 import { Formik } from 'formik';
@@ -14,6 +14,7 @@ export const SHIPPING_RATE = `${API_URL}/calculator/shiping-rate`;
 export const PICKUP_ADDRESS = `${API_URL}/address/pickupAddress`;
 
 const CreateOrders = () => {
+    const [lgShow, setLgShow] = useState(false);
     const [pickup_pin, setPickup_pin] = useState();
     const [addressList, setAddressList] = useState();
     const [courier, setCourier] = useState();
@@ -120,16 +121,7 @@ const CreateOrders = () => {
                     <div className="card-body" style={{ "display": "flex", "flexDirection": "row", "justifyContent": "space-between", "flexFlow": "row wrap" }}>
                         <h4 className="card-title">Create Orders</h4>
                         {/* <i className="menu-arrow"></i> */}
-                        <div>
-                        <input
-                            type="file"
-                            id="file"
-                            ref={fileUploader}
-                            onChange={e=>filePathset(e)}
-                            style={{marginRight: '-100px'}}
-                            />
-                            <button className='btn btn-primary' onClick={readFile}>Bulk Upload</button>
-                        </div>
+                        <Button onClick={() => setLgShow(true)}>Bulk Upload</Button>
                     </div>
                 </div>
             </div>
@@ -455,6 +447,33 @@ const CreateOrders = () => {
           <Toast.Body>Order Failed.</Toast.Body>
         </Toast>
         )}
+            <Modal
+                className='modal'
+                size="md"
+                show={lgShow}
+                onHide={() => setLgShow(false)}
+                aria-labelledby="example-modal-sizes-title-lg"
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="example-modal-sizes-title-lg">
+                                Bulk Upload
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        <input
+                            type="file"
+                            id="file"
+                            ref={fileUploader}
+                            onChange={e=>filePathset(e)}
+                            style={{marginRight: '-100px'}}
+                            />
+                            <br />
+                            <hr />
+                            <button className='btn btn-primary' onClick={readFile}>Create Order</button>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </>
     )
 }

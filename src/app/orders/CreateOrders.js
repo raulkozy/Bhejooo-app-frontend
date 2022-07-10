@@ -14,6 +14,7 @@ export const SHIPPING_RATE = `${API_URL}/calculator/shiping-rate`;
 export const PICKUP_ADDRESS = `${API_URL}/address/pickupAddress`;
 
 const CreateOrders = () => {
+    const [pickup_pin, setPickup_pin] = useState();
     const [addressList, setAddressList] = useState();
     const [courier, setCourier] = useState();
     const [userData, setUserData] = useState({});
@@ -91,6 +92,7 @@ const CreateOrders = () => {
         })
       }
       const fetchshippingrate=(pin,values) =>{
+          if(values.customer && values.order && values.shipment_details)
           axios.get(SHIPPING_RATE+'?source='+values.customer.address.Pin+'&destination='+pin+'&payment_type='+values.order.payment_mode+'&weight='+values.shipment_details.weight+'&productValue='+values.order.product_price,{
               headers:{
                   'length': values.shipment_details.volumetric_weight.length,
@@ -324,7 +326,7 @@ const CreateOrders = () => {
                                 <Card.Body>
                                     <div className="form-check">
                                         <label className="form-check-label">
-                                            <input type="radio" className="form-check-input" name="pickup_details.address_id" id="optionsRadios1" value={ele.id} onChange={handleChange} />
+                                            <input type="radio" className="form-check-input" name="pickup_details.address_id" id="optionsRadios1" value={ele.id} onChange={handleChange} onClick={()=>setPickup_pin(ele.Pin)} />
                                             <i className="input-helper"></i>
                                             <div style={{ "display": "flex", "flexDirection": "row", "paddingLeft": "10px" }}>
                                                 <Card.Title>{ele.address_lane1}</Card.Title>
@@ -345,34 +347,34 @@ const CreateOrders = () => {
                                     <div style={{ "display": "flex", "flexDirection": "row", "justifyContent": "space-between", "flexFlow": "row wrap" }}>
                                         <div className="form-group" style={{ "width": "30%" }}>
                                             <input type="number" name='shipment_details.volumetric_weight.length' required className={`form-control form-control-lg border`}
-                                                id="exampleInputUsername1" placeholder="Volumetric Length*" onChange={handleChange}
+                                                id="exampleInputUsername1" placeholder="Volumetric Length*" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
                                             // value={firstName} onChange={e => handleFirstName(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{firstNameError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "30%" }}>
                                             <input type="number" name='shipment_details.volumetric_weight.width' required className={`form-control form-control-lg border`} 
-                                                id="exampleInputUsername2" placeholder="Volumetric Width*" onChange={handleChange}
+                                                id="exampleInputUsername2" placeholder="Volumetric Width*" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
                                             // value={lastName} onChange={e => handleLastName(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{lastNameError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "30%" }}>
                                             <input type="number" name='shipment_details.volumetric_weight.height' className={`form-control form-control-lg border `} 
-                                                id="exampleInputPassword1" placeholder="Volumetric Height" onChange={handleChange}
+                                                id="exampleInputPassword1" placeholder="Volumetric Height" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
                                             // value={password} onChange={e => handlePassword(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{passwordError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "45%" }}>
                                             <input type="number" name='shipment_details.weight' className={`form-control form-control-lg border `} 
-                                                id="exampleInputEmail1" placeholder="Weight" onChange={handleChange}
+                                                id="exampleInputEmail1" placeholder="Weight" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
                                             // value={email} onChange={e => handleEmail(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{emailError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "45%" }}>
-                                            <input type="number" name='shipment_details.pickup_date' className={`form-control form-control-lg border `} 
+                                            <input type="number" name='shipment_details.pickup_date' value={pickup_pin} className={`form-control form-control-lg border `} 
                                                 id="exampleInputEmail1" placeholder="Pickup Pin" onChange={(e)=>fetchshippingrate(e.target.value,values)}
                                             // value={email} onChange={e => handleEmail(e)} 
                                             />
@@ -420,7 +422,9 @@ const CreateOrders = () => {
                                     </div>
                                 </div>   */}
                             <br />      
-                            <button className={'btn btn-primary btn-lg'} type='submit'>Order</button>
+                            <button className={'btn btn-primary btn-lg'} type='submit' disabled={isSubmitting}>
+                                {isSubmitting && (<i class="fa fa-spinner fa-spin"></i>)}Order
+                            </button>
                             </div>
                             </form>
                             )}

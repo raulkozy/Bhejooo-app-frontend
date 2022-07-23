@@ -359,8 +359,8 @@ const CreateOrders = () => {
                                             {/* <p style={{ "color": "red" }}>{passwordError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "45%" }}>
-                                            <input type="number" name='shipment_details.weight' className={`form-control form-control-lg border `} 
-                                                id="exampleInputEmail1" placeholder="Weight" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
+                                            <input type="text" name='shipment_details.weight' className={`form-control form-control-lg border `} 
+                                                id="exampleInputEmail1" placeholder="Weight(Kgs)" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
                                             // value={email} onChange={e => handleEmail(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{emailError}</p> */}

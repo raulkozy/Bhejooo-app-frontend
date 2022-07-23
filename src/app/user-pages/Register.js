@@ -57,7 +57,7 @@ const initialState = {
   // ordersError: false
 }
 
-const API_URL = process.env.API_URL || 'http://ec2-15-207-99-109.ap-south-1.compute.amazonaws.com';
+const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const REGISTER_URL = `${API_URL}/user/register`;
 export const OTP_URL = `${API_URL}/user/verifyMobileOtp`;
 export const PIN_DETAILS = `${API_URL}/general/pinDetails?pinCode=`;
@@ -91,7 +91,7 @@ const Register = () => {
   const [OTP, setOTP] = useState(false);
   const [info, setInfo] = useState();
 
-  const passwordValidation = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/;
+  const passwordValidation = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   const emailValidator = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
   const mobileValidator = /^[6-9]\d{9}$/gi;
   const panValidator = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
@@ -120,7 +120,7 @@ const Register = () => {
   const handlePassword = event => {
     setPassword(event.target.value);
     if (event.target.value !== "") {
-      if (!passwordValidation.test(password)) {
+      if (!passwordValidation.test(event.target.value)) {
         setPasswordError("Password should be 8 characters long with atleast 1 uppercase, 1 lowercase, a digit and a special charater");
       } else {
         setPasswordError("");
@@ -431,7 +431,7 @@ const Register = () => {
                       <p style={{ "color": "red" }}>{lastNameError}</p>
                     </div>
                     <div className="form-group" style={{ "width": "30%" }}>
-                      <input type="password" className={`form-control form-control-lg border ${passwordError ? "border-danger" : "border-secondary"}`} id="exampleInputPassword1" placeholder="Enter Password" value={password}
+                      <input type="password" required className={`form-control form-control-lg border ${passwordError ? "border-danger" : "border-secondary"}`} id="exampleInputPassword1" placeholder="Enter Password*" value={password}
                         onChange={e => handlePassword(e)} />
                       <p style={{ "color": "red" }}>{passwordError}</p>
                     </div>
@@ -532,7 +532,7 @@ const Register = () => {
                       <p style={{ "color": "red" }}>{ordersError}</p>
                     </div> */}
                     <div className="form-group" style={{ "width": "30%" }}>
-                      <input type="file" required className="form-control form-control-lg" id="file" placeholder="Documents" />
+                      <input type="file" className="form-control form-control-lg" id="file" placeholder="Documents" />
                     </div>
                   </div>
                   {/* <h5>Bank Details :</h5>
@@ -575,7 +575,8 @@ const Register = () => {
                 <div className="mt-3">
                   {/* <Link className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" to="/dashboard">SIGN 
                     UP</Link> */}
-                  <button type="submit" className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">SIGN UP</button>
+                  <button type="submit" className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" disabled={isSubmitting}>
+                  {isSubmitting && (<i class="fa fa-spinner fa-spin"></i>)}SIGN UP</button>
                 </div>
                 <div className="text-center mt-4 font-weight-light">
                   Already have an account? <Link to="/user-pages/login" className="text-primary">Login</Link>

@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Trans } from 'react-i18next';
-import { Button, Card, Form, Table, Toast } from 'react-bootstrap';
+import { Button, Card, Form, Modal, Table, Toast } from 'react-bootstrap';
 import * as XLSX from "xlsx";
 import axios from 'axios';
 import { Formik } from 'formik';
 
-const API_URL = process.env.API_URL || 'http://ec2-15-207-99-109.ap-south-1.compute.amazonaws.com';
+const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const CREATE_ORDER_BULK = `${API_URL}/order/create/bulk`;
 export const CREATE_ORDER = `${API_URL}/order/create`;
 export const PIN_DETAILS = `${API_URL}/general/pinDetails?pinCode=`;
@@ -14,6 +14,8 @@ export const SHIPPING_RATE = `${API_URL}/calculator/shiping-rate`;
 export const PICKUP_ADDRESS = `${API_URL}/address/pickupAddress`;
 
 const CreateOrders = () => {
+    const [lgShow, setLgShow] = useState(false);
+    const [pickup_pin, setPickup_pin] = useState();
     const [addressList, setAddressList] = useState();
     const [courier, setCourier] = useState();
     const [userData, setUserData] = useState({});
@@ -91,6 +93,7 @@ const CreateOrders = () => {
         })
       }
       const fetchshippingrate=(pin,values) =>{
+          if(values.customer && values.order && values.shipment_details)
           axios.get(SHIPPING_RATE+'?source='+values.customer.address.Pin+'&destination='+pin+'&payment_type='+values.order.payment_mode+'&weight='+values.shipment_details.weight+'&productValue='+values.order.product_price,{
               headers:{
                   'length': values.shipment_details.volumetric_weight.length,
@@ -118,26 +121,17 @@ const CreateOrders = () => {
                     <div className="card-body" style={{ "display": "flex", "flexDirection": "row", "justifyContent": "space-between", "flexFlow": "row wrap" }}>
                         <h4 className="card-title">Create Orders</h4>
                         {/* <i className="menu-arrow"></i> */}
-                        <div>
-                        <input
-                            type="file"
-                            id="file"
-                            ref={fileUploader}
-                            onChange={e=>filePathset(e)}
-                            style={{marginRight: '-100px'}}
-                            />
-                            <button className='btn btn-primary' onClick={readFile}>Bulk Upload</button>
-                        </div>
+                        <Button onClick={() => setLgShow(true)}>Bulk Upload</Button>
                     </div>
                 </div>
             </div>
         </div>
         <div>
-            <div className="d-flex align-items-center auth px-0 h-100">
+            <div className="align-items-center auth px-0 h-100">
                 <div className="row w-100 mx-0">
                     <div className="col-lg-12 mx-auto">
                         {/* <div className="card text-left py-5 px-4 px-sm-5"> */}
-                        <h1 className="title-text" style={{"font-size": "24px"}}>Single Order</h1> 
+                        <h1 className="title-text" style={{fontSize: "24px"}}>Single Order</h1> 
                         {/* </div> */}
                         <Formik
                             initialValues={{order:{payment_mode:'Prepaid'}}}
@@ -212,8 +206,8 @@ const CreateOrders = () => {
                                             {/* <p style={{ "color": "red" }}>{mobileNoError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "30%" }}>
-                                            <input type="text" name='customer.address.landmark' required className={`form-control form-control-lg border`}
-                                                id="exampleInputUsername1" placeholder="Landmark*" onChange={handleChange}
+                                            <input type="text" name='customer.address.landmark' className={`form-control form-control-lg border`}
+                                                id="exampleInputUsername1" placeholder="Landmark" onChange={handleChange}
                                             // value={firstName} onChange={e => handleFirstName(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{firstNameError}</p> */}
@@ -316,39 +310,63 @@ const CreateOrders = () => {
                                 </div>
                             </Form.Group>
 
+
+                            <h4>Address Details:</h4>
+                                <div className="row">
+                                {addressList && addressList.map(ele=>
+                                <Card className='mb-2' style={{ width: '18rem', border: values.pickup_details && values.pickup_details.address_id==ele.id?'0.5px solid #fff':'' }}>
+                                <Card.Body>
+                                    <div className="form-check">
+                                        <label className="form-check-label">
+                                            <input type="radio" className="form-check-input" name="pickup_details.address_id" id="optionsRadios1" value={ele.id} onChange={handleChange} onClick={()=>setPickup_pin(ele.Pin)} />
+                                            <i className="input-helper"></i>
+                                            <div style={{ "display": "flex", "flexDirection": "row", "paddingLeft": "10px" }}>
+                                                <Card.Title>{ele.address_lane1}</Card.Title>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <Card.Text>
+                                    {ele.address_lane1},&nbsp;
+                                    {ele.address_lane2},&nbsp;
+                                    {ele.city},&nbsp;{ele.state}-{ele.Pin}
+                                    </Card.Text>
+                                </Card.Body>
+                                </Card>)}
+                                </div>
+
                             <h4>Shipment Details:</h4>
                                 <div>
                                     <div style={{ "display": "flex", "flexDirection": "row", "justifyContent": "space-between", "flexFlow": "row wrap" }}>
                                         <div className="form-group" style={{ "width": "30%" }}>
                                             <input type="number" name='shipment_details.volumetric_weight.length' required className={`form-control form-control-lg border`}
-                                                id="exampleInputUsername1" placeholder="Volumetric Length*" onChange={handleChange}
+                                                id="exampleInputUsername1" placeholder="Volumetric Length*" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
                                             // value={firstName} onChange={e => handleFirstName(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{firstNameError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "30%" }}>
                                             <input type="number" name='shipment_details.volumetric_weight.width' required className={`form-control form-control-lg border`} 
-                                                id="exampleInputUsername2" placeholder="Volumetric Width*" onChange={handleChange}
+                                                id="exampleInputUsername2" placeholder="Volumetric Width*" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
                                             // value={lastName} onChange={e => handleLastName(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{lastNameError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "30%" }}>
                                             <input type="number" name='shipment_details.volumetric_weight.height' className={`form-control form-control-lg border `} 
-                                                id="exampleInputPassword1" placeholder="Volumetric Height" onChange={handleChange}
+                                                id="exampleInputPassword1" placeholder="Volumetric Height" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
                                             // value={password} onChange={e => handlePassword(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{passwordError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "45%" }}>
                                             <input type="number" name='shipment_details.weight' className={`form-control form-control-lg border `} 
-                                                id="exampleInputEmail1" placeholder="Weight" onChange={handleChange}
+                                                id="exampleInputEmail1" placeholder="Weight" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
                                             // value={email} onChange={e => handleEmail(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{emailError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "45%" }}>
-                                            <input type="number" name='shipment_details.pickup_date' className={`form-control form-control-lg border `} 
+                                            <input type="number" name='shipment_details.pickup_date' value={pickup_pin} className={`form-control form-control-lg border `} 
                                                 id="exampleInputEmail1" placeholder="Pickup Pin" onChange={(e)=>fetchshippingrate(e.target.value,values)}
                                             // value={email} onChange={e => handleEmail(e)} 
                                             />
@@ -359,7 +377,7 @@ const CreateOrders = () => {
                                         <Table className="leader-board" striped hover variant="dark">
                                             
                                             <tbody>
-                                                {courier && courier.map(ele=>
+                                                {courier && courier.map(ele=>(
                                                 <tr>
                                                     <td>
                                                     <div className="form-check">
@@ -367,37 +385,23 @@ const CreateOrders = () => {
                                                             <input type="radio" className="form-check-input" name="shipment_details.carrier.carrier" id="optionsRadios1" value={ele.carrier} onChange={handleChange} />
                                                             <i className="input-helper"></i>
                                                             <div style={{ "display": "flex", "flexDirection": "row", "paddingLeft": "10px" }}>
-                                                                <span className="menu-title" style={{ "paddingLeft": "10px", color: "#FFF" }}><Trans>{ele.carrier}</Trans></span>
+                                                                <span className="menu-title" style={{ "paddingLeft": "10px", color: "#FFF" }}>{ele.carrier}</span>
                                                             </div>
                                                         </label>
                                                     </div>
                                                     </td>
                                                     <td>
                                                         <span className="menu-icon"><i className="mdi mdi-currency-inr text-success"></i></span>
-                                                        <span className="menu-title" style={{ "paddingLeft": "10px", color: "#FFF" }}><Trans>{ele.rate}</Trans></span>
+                                                        <span className="menu-title" style={{ "paddingLeft": "10px", color: "#FFF" }}>{ele.rate}</span>
                                                     </td>
-                                                </tr>)}
+                                                </tr>))}
                                             </tbody>
                                         </Table>
                                     </div>
                                 </div>
                                 <br />
 
-                            <h4>Address Details:</h4>
-                                <div>
-                                {addressList && addressList.map(ele=>
-                                <Card className='mb-2' style={{ width: '18rem', border: values.pickup_details && values.pickup_details.address_id==ele.id?'0.5px solid #fff':'' }}>
-                                <Card.Body>
-                                    <Card.Title>{ele.address_lane1}</Card.Title>
-                                    <Card.Text>
-                                    {ele.address_lane1},&nbsp;
-                                    {ele.address_lane2},&nbsp;
-                                    {ele.city},&nbsp;{ele.state}-{ele.Pin}
-                                    </Card.Text>
-                                    <Button variant="primary" onClick={()=>setFieldValue('pickup_details.address_id',ele.id)}>Select</Button>
-                                </Card.Body>
-                                </Card>)}
-                                </div>
+
                             {/* <h4>Pickup Details:</h4>
                                 <div>
                                     <div style={{ "display": "flex", "flexDirection": "row", "justifyContent": "space-between", "flexFlow": "row wrap" }}>
@@ -410,7 +414,9 @@ const CreateOrders = () => {
                                     </div>
                                 </div>   */}
                             <br />      
-                            <button className={'btn btn-primary btn-lg'} type='submit'>Order</button>
+                            <button className={'btn btn-primary btn-lg'} type='submit' disabled={isSubmitting}>
+                                {isSubmitting && (<i class="fa fa-spinner fa-spin"></i>)}Order
+                            </button>
                             </div>
                             </form>
                             )}
@@ -441,6 +447,33 @@ const CreateOrders = () => {
           <Toast.Body>Order Failed.</Toast.Body>
         </Toast>
         )}
+            <Modal
+                className='modal'
+                size="md"
+                show={lgShow}
+                onHide={() => setLgShow(false)}
+                aria-labelledby="example-modal-sizes-title-lg"
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="example-modal-sizes-title-lg">
+                                Bulk Upload
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        <input
+                            type="file"
+                            id="file"
+                            ref={fileUploader}
+                            onChange={e=>filePathset(e)}
+                            style={{marginRight: '-100px'}}
+                            />
+                            <br />
+                            <hr />
+                            <button className='btn btn-primary' onClick={readFile}>Create Order</button>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </>
     )
 }

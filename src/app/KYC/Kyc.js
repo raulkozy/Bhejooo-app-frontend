@@ -49,7 +49,7 @@ const Kyc = () => {
               <h4 className="card-title">Kyc form</h4>
 
               <Formik
-                            initialValues={kycForm}
+                            initialValues={kycForm?kycForm:{}}
                             enableReinitialize
                             onSubmit={(values, { setSubmitting }) => {
                                 if(values.id)  

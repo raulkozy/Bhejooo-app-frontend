@@ -25,7 +25,7 @@ const ManageOrders = () => {
     // Extract Data (create a workbook object from the table)
     var workbook = XLSX.utils.table_to_book(table_elt);
 
-    // Package and Release Data (`writeFile` tries to write and save an XLSB file)
+    // Package and Release Data (`writeFile` tries to write and save an XLS file)
     XLSX.writeFile(workbook, "Report.xls");
   };
   return (
@@ -164,7 +164,7 @@ const ManageOrders = () => {
                             {status == 'SHIPPED' && (
                               <>
                                 <button type="button" class="btn btn-light btn-fw">
-                                  Shipping Label
+                                  Ready to ship
                                 </button>
                               </>
                             )}

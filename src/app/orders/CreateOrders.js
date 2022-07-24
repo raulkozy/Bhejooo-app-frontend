@@ -4,6 +4,7 @@ import { Button, Card, Form, Modal, Table, Toast } from 'react-bootstrap';
 import * as XLSX from "xlsx";
 import axios from 'axios';
 import { Formik } from 'formik';
+import { useHistory } from 'react-router-dom';
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const CREATE_ORDER_BULK = `${API_URL}/order/create/bulk`;
@@ -24,6 +25,7 @@ const CreateOrders = () => {
     const [failtoast, setFailToast] = useState(false);
     const fileUploader = useRef();
     const [file, setFile] = useState();
+    const history = useHistory();
     
       const filePathset = (e) => {
         e.stopPropagation();
@@ -324,6 +326,7 @@ const CreateOrders = () => {
                                                 <Card.Title>{ele.address_lane1}</Card.Title>
                                             </div>
                                         </label>
+                                        <i className="fas fa-edit" style={{position: 'absolute',top: '0px', right: '-10px',cursor: 'pointer'}} onClick={()=>history.push('../address/'+ele.id)}></i>
                                     </div>
                                     <Card.Text>
                                     {ele.address_lane1},&nbsp;
@@ -332,6 +335,12 @@ const CreateOrders = () => {
                                     </Card.Text>
                                 </Card.Body>
                                 </Card>)}
+                                <Card className="text-center" style={{cursor: 'pointer'}}>
+                                    <Card.Title>&nbsp;</Card.Title>
+                                    <Card.Body>
+                                        <i class="fa fa-plus fa-6" aria-hidden="true" onClick={()=>history.push('../address')}></i>
+                                    </Card.Body>
+                                </Card>
                                 </div>
 
                             <h4>Shipment Details:</h4>

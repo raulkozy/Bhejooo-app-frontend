@@ -136,7 +136,7 @@ const CreateOrders = () => {
                         <h1 className="title-text" style={{fontSize: "24px"}}>Single Order</h1> 
                         {/* </div> */}
                         <Formik
-                            initialValues={{order:{payment_mode:'Prepaid'}}}
+                            initialValues={{order:{payment_mode:'PREPAID'}}}
                             onSubmit={(values, { setSubmitting }) => {
                                 setTimeout(() => {
                                 axios.post(CREATE_ORDER, {...values, customer: {...values.customer,address:{...values.customer.address,...userData}}}).then(async (res)=>{
@@ -301,7 +301,7 @@ const CreateOrders = () => {
                                     </div>
                                     <div className="form-check" style={{ "paddingLeft": "20px" }}>
                                         <label className="form-check-label">
-                                            <input type="radio" className="form-check-input" name="order.payment_mode" id="optionsRadios2" value="Prepaid" onChange={handleChange} defaultChecked />
+                                            <input type="radio" className="form-check-input" name="order.payment_mode" id="optionsRadios2" value="PREPAID" onChange={handleChange} defaultChecked />
                                             <i className="input-helper"></i>
                                             <div style={{ "display": "flex", "flexDirection": "row", "paddingLeft": "10px" }}>
                                                 <span className="menu-icon"><i className="mdi mdi-credit-card text-warning"></i></span>

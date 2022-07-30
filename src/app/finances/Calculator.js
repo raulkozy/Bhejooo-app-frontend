@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { Formik } from 'formik';
 import React, { useRef, useState, useEffect } from 'react';
-import { Table, Toast } from "react-bootstrap";
+import { Form, Table, Toast } from "react-bootstrap";
+import { Trans } from 'react-i18next';
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const SHIPPING_RATE = `${API_URL}/calculator/shiping-rate`;
@@ -14,16 +15,21 @@ const Calculator = () => {
         setToast(false);
         setFailToast(false);
     }
+    const maxLengthCheck = (object) => {
+        if (object.target.value.length > object.target.maxLength) {
+            object.target.value = object.target.value.slice(0, object.target.maxLength)
+        }
+    }
     return (
         <>
             <div className="topBar">
-                <h2>Calculator</h2>
+                <h2>Shipping Rate Calculator</h2>
             </div>
             <div className="row">
                 <div className="col-md-12 grid-margin stretch-card">
                     <div className="card">
                         <div className="card-body">
-                            <h4 className="card-title">Calculator form</h4>
+                           {/*  <h4 className="card-title">Calculator form</h4> */}
 
                             <Formik
                                 initialValues={{}}
@@ -39,6 +45,7 @@ const Calculator = () => {
                                         setSubmitting(false);
                                         setToast(true);
                                     }, err => {
+                                        setSubmitting(false);
                                         setFailToast(true);
                                     })
                                 }}
@@ -56,15 +63,15 @@ const Calculator = () => {
                                     <form className="forms-sample row ml-1" onSubmit={handleSubmit}>
                                         <div style={{ "display": "flex", "flexDirection": "row", "justifyContent": "space-between", "flexFlow": "row wrap" }}>
                                             <div className="form-group" style={{ "width": "45%" }}>
-                                                <input type="number" name='source' className={`form-control form-control-lg border `}
-                                                    id="exampleInputEmail1" placeholder="Source Pin" onChange={handleChange}
+                                                <input type="number" maxLength = "6" name='source' className={`form-control form-control-lg border `}
+                                                    id="exampleInputEmail1" placeholder="Source Pin" onChange={handleChange} onInput={maxLengthCheck}
                                                 // value={email} onChange={e => handleEmail(e)} 
                                                 />
                                                 {/* <p style={{ "color": "red" }}>{emailError}</p> */}
                                             </div>
                                             <div className="form-group" style={{ "width": "45%" }}>
-                                                <input type="number" name='destination' className={`form-control form-control-lg border `}
-                                                    id="exampleInputEmail1" placeholder="Pickup Pin" onChange={handleChange}
+                                                <input type="number" maxLength = "6" name='destination' className={`form-control form-control-lg border `}
+                                                    id="exampleInputEmail1" placeholder="Pickup Pin" onChange={handleChange} onInput={maxLengthCheck}
                                                 // value={email} onChange={e => handleEmail(e)} 
                                                 />
                                                 {/* <p style={{ "color": "red" }}>{emailError}</p> */}
@@ -99,11 +106,35 @@ const Calculator = () => {
                                             </div>
                                             <div className="form-group" style={{ "width": "45%" }}>
                                                 <input type="number" name='product_price' className={`form-control form-control-lg border `}
-                                                    id="exampleInputEmail1" placeholder="Produt Price" onChange={handleChange}
+                                                    id="exampleInputEmail1" placeholder="Product Price" onChange={handleChange}
                                                 // value={email} onChange={e => handleEmail(e)} 
                                                 />
                                                 {/* <p style={{ "color": "red" }}>{emailError}</p> */}
                                             </div>
+                                            <Form.Group>
+                                                <div >
+                                                    <div className="form-check">
+                                                        <label className="form-check-label">
+                                                            <input type="radio" className="form-check-input" name="payment_mode" id="optionsRadios1" value="COD" onChange={handleChange} />
+                                                            <i className="input-helper"></i>
+                                                            <div style={{ "display": "flex", "flexDirection": "row", "paddingLeft": "10px" }}>
+                                                                <span className="menu-icon"><i className="mdi mdi-currency-inr text-success"></i></span>
+                                                                <span className="menu-title" style={{ "paddingLeft": "10px" }}><Trans>COD</Trans></span>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                    <div className="form-check" style={{ "paddingLeft": "20px" }}>
+                                                        <label className="form-check-label">
+                                                            <input type="radio" className="form-check-input" name="payment_mode" id="optionsRadios2" value="PREPAID" onChange={handleChange} defaultChecked />
+                                                            <i className="input-helper"></i>
+                                                            <div style={{ "display": "flex", "flexDirection": "row", "paddingLeft": "10px" }}>
+                                                                <span className="menu-icon"><i className="mdi mdi-credit-card text-warning"></i></span>
+                                                                <span className="menu-title" style={{ "paddingLeft": "10px" }}><Trans>Prepaid</Trans></span>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </Form.Group>
 
 
                                         </div>
@@ -111,7 +142,7 @@ const Calculator = () => {
 
                                         <div className="col-md-12 mb-2" style={{paddingLeft: '0px'}}>
                                             <button type="submit" className="btn btn-primary mr-2" disabled={isSubmitting}>
-                                                Submit
+                                                {isSubmitting && (<i class="fa fa-spinner fa-spin"></i>)}Submit
                                             </button>
                                         </div>
 

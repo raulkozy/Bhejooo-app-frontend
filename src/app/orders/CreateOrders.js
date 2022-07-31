@@ -13,6 +13,7 @@ export const PIN_DETAILS = `${API_URL}/general/pinDetails?pinCode=`;
 export const PRODUCT_CATEGORY = `${API_URL}/general/productCategoryList`;
 export const SHIPPING_RATE = `${API_URL}/calculator/shiping-rate`;
 export const PICKUP_ADDRESS = `${API_URL}/address/pickupAddress`;
+export const TEMPLATE = `${API_URL}/document/bulkimporttemplate`;
 
 const CreateOrders = () => {
     const [lgShow, setLgShow] = useState(false);
@@ -26,6 +27,24 @@ const CreateOrders = () => {
     const fileUploader = useRef();
     const [file, setFile] = useState();
     const history = useHistory();
+
+      const downloadTemplate = () => {
+        axios.get(`${TEMPLATE}`,{
+            responseType: 'blob',
+        })
+            .then(({data}) => {
+                const href = window.URL.createObjectURL(data);
+                const link = document.createElement('a');
+                link.href = href;
+                link.setAttribute('download', 'Bulk_Order_template.xlsx'); //or any other extension
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch((err) => {
+                return Promise.reject({ Error: 'Something Went Wrong', err });
+            })
+      }
     
       const filePathset = (e) => {
         e.stopPropagation();
@@ -338,7 +357,7 @@ const CreateOrders = () => {
                                 <Card className="text-center" style={{cursor: 'pointer'}}>
                                     <Card.Title>&nbsp;</Card.Title>
                                     <Card.Body>
-                                        <i class="fa fa-plus fa-6" aria-hidden="true" onClick={()=>history.push('../address')}></i>
+                                        <i className="fa fa-plus fa-6" aria-hidden="true" onClick={()=>history.push('../address')}></i>
                                     </Card.Body>
                                 </Card>
                                 </div>
@@ -424,7 +443,7 @@ const CreateOrders = () => {
                                 </div>   */}
                             <br />      
                             <button className={'btn btn-primary btn-lg'} type='submit' disabled={isSubmitting}>
-                                {isSubmitting && (<i class="fa fa-spinner fa-spin"></i>)}Order
+                                {isSubmitting && (<i className="fa fa-spinner fa-spin"></i>)}Order
                             </button>
                             </div>
                             </form>
@@ -478,6 +497,7 @@ const CreateOrders = () => {
                             style={{marginRight: '-100px'}}
                             />
                             <br />
+                            <span style={{fontSize: '12px'}}>(<b>Note</b>: Please refer to the <a href='javascript:;' onClick={downloadTemplate}>template</a> before uploading)</span>
                             <hr />
                             <button className='btn btn-primary' onClick={readFile}>Create Order</button>
                     </div>

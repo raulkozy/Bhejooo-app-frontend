@@ -43,7 +43,7 @@ const Calculator = () => {
                                     }).then(res => {
                                         setCourier(res.data.rates);
                                         setSubmitting(false);
-                                        setToast(true);
+                                        //setToast(true);
                                     }, err => {
                                         setSubmitting(false);
                                         setFailToast(true);
@@ -111,8 +111,7 @@ const Calculator = () => {
                                                 />
                                                 {/* <p style={{ "color": "red" }}>{emailError}</p> */}
                                             </div>
-                                            <Form.Group>
-                                                <div >
+                                                <div className="form-group" style={{ "width": "45%" }}>
                                                     <div className="form-check">
                                                         <label className="form-check-label">
                                                             <input type="radio" className="form-check-input" name="payment_mode" id="optionsRadios1" value="COD" onChange={handleChange} />
@@ -134,7 +133,6 @@ const Calculator = () => {
                                                         </label>
                                                     </div>
                                                 </div>
-                                            </Form.Group>
 
 
                                         </div>

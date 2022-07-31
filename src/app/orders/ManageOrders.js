@@ -65,13 +65,13 @@ const ManageOrders = () => {
         <div className="bulk-action">
           <div className="row">
             {status == 'TO_BE_PROCESSED' && (
-              <>
                 <button type="button" className="btn btn-success btn-fw" disabled={!checked}>
                   I want to ship
-                </button>
+                </button>)}
+            {status == 'PROCESSED' && (    
                 <button type="button" className="btn btn-danger btn-fw" style={{ marginLeft: '16px', height: '30px' }} disabled={!checked}>
                   Cancel
-                </button></>)}
+                </button>)}
             <button type="button" className="btn btn-info btn-fw" style={{ marginLeft: '16px', height: '30px' }} onClick={exportToExcel}>
               Export to Excel
             </button>

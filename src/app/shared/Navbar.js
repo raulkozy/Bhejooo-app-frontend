@@ -137,7 +137,7 @@ const Navbar = () => {
                 <i className="mdi mdi-wallet"></i>
               </a>
             </li> */}
-            <Dropdown alignRight as="li" className="nav-item border-left" >
+            {/* <Dropdown alignRight as="li" className="nav-item border-left" >
               <Dropdown.Toggle as="a" className="nav-link count-indicator cursor-pointer">
                 <i className="mdi mdi-email"></i>
                 <span className="count bg-success"></span>
@@ -148,7 +148,7 @@ const Navbar = () => {
                 <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
                   <div className="preview-thumbnail">
                     <div className="preview-icon bg-dark rounded-circle">
-                      {/* <img src={require('../../assets/images/faces/face4.jpg')} alt="profile" className="rounded-circle profile-pic" /> */}
+                      <img src={require('../../assets/images/faces/face4.jpg')} alt="profile" className="rounded-circle profile-pic" />
                     </div>
                   </div>
                   <div className="preview-item-content">
@@ -160,7 +160,7 @@ const Navbar = () => {
                 <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
                   <div className="preview-thumbnail">
                     <div className="preview-icon bg-dark rounded-circle">
-                      {/* <img src={require('../../assets/images/faces/face2.jpg')} alt="profile" className="rounded-circle profile-pic" /> */}
+                      <img src={require('../../assets/images/faces/face2.jpg')} alt="profile" className="rounded-circle profile-pic" />
                     </div>
                   </div>
                   <div className="preview-item-content">
@@ -172,7 +172,7 @@ const Navbar = () => {
                 <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
                   <div className="preview-thumbnail">
                     <div className="preview-icon bg-dark rounded-circle">
-                      {/* <img src={require('../../assets/images/faces/face3.jpg')} alt="profile" className="rounded-circle profile-pic" /> */}
+                      <img src={require('../../assets/images/faces/face3.jpg')} alt="profile" className="rounded-circle profile-pic" />
                     </div>
                   </div>
                   <div className="preview-item-content">
@@ -236,7 +236,7 @@ const Navbar = () => {
                 <Dropdown.Divider />
                 <p className="p-3 mb-0 text-center"><Trans>See all notifications</Trans></p>
               </Dropdown.Menu>
-            </Dropdown>
+            </Dropdown> */}
             <Dropdown alignRight as="li" className="nav-item">
               <Dropdown.Toggle as="a" className="nav-link cursor-pointer no-caret">
                 <div className="navbar-profile">

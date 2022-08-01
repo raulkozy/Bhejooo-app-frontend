@@ -4,6 +4,7 @@ import { Button, Card, Form, Modal, Table, Toast } from 'react-bootstrap';
 import * as XLSX from "xlsx";
 import axios from 'axios';
 import { Formik } from 'formik';
+import { useHistory } from 'react-router-dom';
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const CREATE_ORDER_BULK = `${API_URL}/order/create/bulk`;
@@ -12,6 +13,7 @@ export const PIN_DETAILS = `${API_URL}/general/pinDetails?pinCode=`;
 export const PRODUCT_CATEGORY = `${API_URL}/general/productCategoryList`;
 export const SHIPPING_RATE = `${API_URL}/calculator/shiping-rate`;
 export const PICKUP_ADDRESS = `${API_URL}/address/pickupAddress`;
+export const TEMPLATE = `${API_URL}/document/bulkimporttemplate`;
 
 const CreateOrders = () => {
     const [lgShow, setLgShow] = useState(false);
@@ -24,6 +26,25 @@ const CreateOrders = () => {
     const [failtoast, setFailToast] = useState(false);
     const fileUploader = useRef();
     const [file, setFile] = useState();
+    const history = useHistory();
+
+      const downloadTemplate = () => {
+        axios.get(`${TEMPLATE}`,{
+            responseType: 'blob',
+        })
+            .then(({data}) => {
+                const href = window.URL.createObjectURL(data);
+                const link = document.createElement('a');
+                link.href = href;
+                link.setAttribute('download', 'Bulk_Order_template.xlsx'); //or any other extension
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch((err) => {
+                return Promise.reject({ Error: 'Something Went Wrong', err });
+            })
+      }
     
       const filePathset = (e) => {
         e.stopPropagation();
@@ -134,7 +155,7 @@ const CreateOrders = () => {
                         <h1 className="title-text" style={{fontSize: "24px"}}>Single Order</h1> 
                         {/* </div> */}
                         <Formik
-                            initialValues={{order:{payment_mode:'Prepaid'}}}
+                            initialValues={{order:{payment_mode:'PREPAID'}}}
                             onSubmit={(values, { setSubmitting }) => {
                                 setTimeout(() => {
                                 axios.post(CREATE_ORDER, {...values, customer: {...values.customer,address:{...values.customer.address,...userData}}}).then(async (res)=>{
@@ -299,7 +320,7 @@ const CreateOrders = () => {
                                     </div>
                                     <div className="form-check" style={{ "paddingLeft": "20px" }}>
                                         <label className="form-check-label">
-                                            <input type="radio" className="form-check-input" name="order.payment_mode" id="optionsRadios2" value="Prepaid" onChange={handleChange} defaultChecked />
+                                            <input type="radio" className="form-check-input" name="order.payment_mode" id="optionsRadios2" value="PREPAID" onChange={handleChange} defaultChecked />
                                             <i className="input-helper"></i>
                                             <div style={{ "display": "flex", "flexDirection": "row", "paddingLeft": "10px" }}>
                                                 <span className="menu-icon"><i className="mdi mdi-credit-card text-warning"></i></span>
@@ -324,6 +345,7 @@ const CreateOrders = () => {
                                                 <Card.Title>{ele.address_lane1}</Card.Title>
                                             </div>
                                         </label>
+                                        <i className="fas fa-edit" style={{position: 'absolute',top: '0px', right: '-10px',cursor: 'pointer'}} onClick={()=>history.push('../address/'+ele.id)}></i>
                                     </div>
                                     <Card.Text>
                                     {ele.address_lane1},&nbsp;
@@ -332,6 +354,12 @@ const CreateOrders = () => {
                                     </Card.Text>
                                 </Card.Body>
                                 </Card>)}
+                                <Card className="text-center" style={{cursor: 'pointer'}}>
+                                    <Card.Title>&nbsp;</Card.Title>
+                                    <Card.Body>
+                                        <i className="fa fa-plus fa-6" aria-hidden="true" onClick={()=>history.push('../address')}></i>
+                                    </Card.Body>
+                                </Card>
                                 </div>
 
                             <h4>Shipment Details:</h4>
@@ -359,8 +387,8 @@ const CreateOrders = () => {
                                             {/* <p style={{ "color": "red" }}>{passwordError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "45%" }}>
-                                            <input type="number" name='shipment_details.weight' className={`form-control form-control-lg border `} 
-                                                id="exampleInputEmail1" placeholder="Weight" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
+                                            <input type="text" name='shipment_details.weight' className={`form-control form-control-lg border `} 
+                                                id="exampleInputEmail1" placeholder="Weight(Kgs)" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
                                             // value={email} onChange={e => handleEmail(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{emailError}</p> */}
@@ -415,7 +443,7 @@ const CreateOrders = () => {
                                 </div>   */}
                             <br />      
                             <button className={'btn btn-primary btn-lg'} type='submit' disabled={isSubmitting}>
-                                {isSubmitting && (<i class="fa fa-spinner fa-spin"></i>)}Order
+                                {isSubmitting && (<i className="fa fa-spinner fa-spin"></i>)}Order
                             </button>
                             </div>
                             </form>
@@ -469,6 +497,7 @@ const CreateOrders = () => {
                             style={{marginRight: '-100px'}}
                             />
                             <br />
+                            <span style={{fontSize: '12px'}}>(<b>Note</b>: Please refer to the <a href='javascript:;' onClick={downloadTemplate}>template</a> before uploading)</span>
                             <hr />
                             <button className='btn btn-primary' onClick={readFile}>Create Order</button>
                     </div>

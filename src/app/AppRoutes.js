@@ -6,7 +6,9 @@ import Spinner from '../app/shared/Spinner';
 const Dashboard = lazy(() => import('./dashboard/Dashboard'));
 const CreateOrders = lazy(() => import('./orders/CreateOrders'));
 const ManageOrders = lazy(() => import('./orders/ManageOrders'));
+const Address = lazy(() => import('./orders/Address'));
 const KYC = lazy(() => import('./KYC/Kyc'));
+const Calculator = lazy(() => import('./finances/Calculator'));
 
 const Buttons = lazy(() => import('./basic-ui/Buttons'));
 const Dropdowns = lazy(() => import('./basic-ui/Dropdowns'));
@@ -35,7 +37,10 @@ class AppRoutes extends Component {
           <Route exact path="/dashboard" component={Dashboard} />
           <Route exact path="/orders/create-order" component={CreateOrders} />
           <Route exact path="/orders/manage-order" component={ManageOrders} />
+          <Route exact path="/address" component={Address} />
+          <Route exact path="/address/:id" component={Address} />
           <Route exact path="/kyc" component={KYC} />
+          <Route exact path="/finances/calculator" component={Calculator} />
           <Route path="/basic-ui/buttons" component={Buttons} />
           <Route path="/basic-ui/dropdowns" component={Dropdowns} />
           <Route path="/basic-ui/typography" component={Typography} />

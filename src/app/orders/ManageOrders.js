@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./ManageOrders.scss";
 import { Trans } from "react-i18next";
 import { Form } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import axios from "axios";
+import * as XLSX from "xlsx";
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const ORDER_URL = `${API_URL}/order/list`;
@@ -12,11 +13,21 @@ const ManageOrders = () => {
   const [list, setList] = useState();
   const [status, setStatus] = useState('TO_BE_PROCESSED');
   const [checked, setChecked] = useState();
+  const table = useRef();
   useEffect(() => {
     axios.get(ORDER_URL).then(res => {
       setList(res.data);
     })
-  }, [])
+  }, []);
+  const exportToExcel = () => {
+    // Acquire Data (reference to the HTML table)
+    var table_elt = table.current;
+    // Extract Data (create a workbook object from the table)
+    var workbook = XLSX.utils.table_to_book(table_elt);
+
+    // Package and Release Data (`writeFile` tries to write and save an XLS file)
+    XLSX.writeFile(workbook, "Report.xls");
+  };
   return (
     // <div className="row">
     //     <div className="col-12 grid-margin">
@@ -54,14 +65,14 @@ const ManageOrders = () => {
         <div className="bulk-action">
           <div className="row">
             {status == 'TO_BE_PROCESSED' && (
-              <>
                 <button type="button" className="btn btn-success btn-fw" disabled={!checked}>
                   I want to ship
-                </button>
+                </button>)}
+            {status == 'PROCESSED' && (    
                 <button type="button" className="btn btn-danger btn-fw" style={{ marginLeft: '16px', height: '30px' }} disabled={!checked}>
                   Cancel
-                </button></>)}
-            <button type="button" className="btn btn-info btn-fw" style={{ marginLeft: '16px', height: '30px' }}>
+                </button>)}
+            <button type="button" className="btn btn-info btn-fw" style={{ marginLeft: '16px', height: '30px' }} onClick={exportToExcel}>
               Export to Excel
             </button>
           </div>
@@ -73,7 +84,7 @@ const ManageOrders = () => {
             <div className="card-body">
               {/* <h4 className="card-title">Manage Orders</h4> */}
               <div className="table-responsive">
-                <table className="table">
+                <table className="table" ref={table}>
                   <thead>
                     <tr>
                       <th style={{ width: "25px" }}>
@@ -153,7 +164,7 @@ const ManageOrders = () => {
                             {status == 'SHIPPED' && (
                               <>
                                 <button type="button" class="btn btn-light btn-fw">
-                                  Shipping Label
+                                  Ready to ship
                                 </button>
                               </>
                             )}

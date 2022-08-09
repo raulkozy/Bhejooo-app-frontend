@@ -222,7 +222,7 @@ class Sidebar extends Component {
               </div>
             </Collapse>
           </li>
-          <li className={this.isPathActive('/basic-ui') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
+          <li className={this.isPathActive('/tools') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
             <div className={this.state.tools ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('tools')} data-toggle="collapse">
               <span className="menu-icon">
                 <i className="mdi mdi-tooltip-edit"></i>

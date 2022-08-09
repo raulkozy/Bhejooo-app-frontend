@@ -5,18 +5,25 @@ import { Toast } from "react-bootstrap";
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const PRIORItY_URL = `${API_URL}/user/courier-priority`;
+export const PARTNER_LIST = `${API_URL}/general/partnerList`;
 
 const Priority = () => {
     const [toast, setToast] = useState(false);
     const [failtoast, setFailToast] = useState(false);
     const [priorirtyForm, setpriorirtyForm] = useState();
+    const [partner, setPartner] = useState();
+    const [enable, setEnable] = useState();
     const navigate = () => {
         setToast(false);
         setFailToast(false);
     }
     useEffect(()=>{
+        axios.get(PARTNER_LIST).then(res=>{
+            setPartner(res.data);
+        })
         axios.get(PRIORItY_URL).then(res=>{
-        setpriorirtyForm(res.data);
+            setpriorirtyForm(res.data);
+            setEnable(true);
         })
     },[])
     return (
@@ -62,23 +69,26 @@ const Priority = () => {
                                     <form className="forms-sample row" onSubmit={handleSubmit}>
                                         <div className="col-md-6 mb-2">
                                             <div className="form-group">
-                                                <label for="exampleInputUsername1">Courier</label>
-                                                <input
-                                                    placeholder="Select Courier Priority "
-                                                    type="text"
-                                                    id="exampleInputUsername1"
-                                                    className="form-control"
-                                                    name="priority"
-                                                    onChange={handleChange}
-                                                    defaultValue={values && values.priority}
-                                                />
+                                                <label for="exampleInputEmail1">Courier</label>
+                                                {!enable ? (<select required name="priority" onChange={handleChange} className="form-control" id="exampleSelectGender">
+                                                <option>Select Courier Priority</option>
+                                                {partner && partner.map(ele=>
+                                                    <option value={ele} selected={values && values.priority==ele}>{ele}</option>
+                                                )}
+                                                </select>):(
+                                                    <>
+                                                    <p>{values.priority}</p>
+                                                    <button type="button" className="btn btn-primary mr-2" onChange={()=>setEnable(false)}>
+                                                        Edit
+                                                    </button></>
+                                                )}
                                             </div>
                                         </div>
-                                        <div className="col-md-12 mb-2">
+                                        {!enable  && (<div className="col-md-12 mb-2">
                                             <button type="submit" className="btn btn-primary mr-2" disabled={isSubmitting}>
                                                 Submit
                                             </button>
-                                        </div>
+                                        </div>)}
 
                                     </form>
                                 )}

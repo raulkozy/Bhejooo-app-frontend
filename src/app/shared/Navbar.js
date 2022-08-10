@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Trans } from 'react-i18next';
 import axios from 'axios';
 
@@ -8,13 +8,18 @@ const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const GET_BALANCE = `${API_URL}/finance/get-Balance`;
 
 const Navbar = () => {
+  const history = useHistory();
   const [wallet, setwallet] = useState();
   const [credit, setcredit] = useState();
   useEffect(()=>{
     axios.get(GET_BALANCE).then(res=>{
       setwallet(res.data.cash_balance);
       setcredit(res.data.credit_balance);
-    })
+    },
+    e=>{
+      history.push('/user-pages/login-1');
+    }
+    )
   },[])
   const toggleOffcanvas = () => {
     document.querySelector('.sidebar-offcanvas').classList.toggle('active');

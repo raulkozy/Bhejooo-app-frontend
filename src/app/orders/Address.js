@@ -182,6 +182,40 @@ const Address = () => {
                                             </div>
                                         </div>
 
+                                        <div className="col-md-6 mb-2">
+                                            <div className="form-group">
+                                                <label for="exampleInputUsername1">
+                                                    Name
+                                                </label>
+                                                <input
+                                                    placeholder="Name"
+                                                    type="text"
+                                                    id="exampleInputUsername1"
+                                                    className="form-control"
+                                                    name="name"
+                                                    onChange={handleChange}
+                                                    defaultValue={userData && userData.name}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="col-md-6 mb-2">
+                                            <div className="form-group">
+                                                <label for="exampleInputUsername1">
+                                                    Phone No
+                                                </label>
+                                                <input
+                                                    placeholder="Phone No"
+                                                    type="text"
+                                                    id="exampleInputUsername1"
+                                                    className="form-control"
+                                                    name="phoneNo"
+                                                    onChange={handleChange}
+                                                    defaultValue={userData && userData.phoneNo}
+                                                />
+                                            </div>
+                                        </div>
+
 
                                         <div className="col-md-12 mb-2">
                                             <button type="submit" className="btn btn-primary mr-2" disabled={isSubmitting}>

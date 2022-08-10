@@ -37,7 +37,7 @@ const Priority = () => {
                         <div className="card-body">
 
                             <Formik
-                                initialValues={priorirtyForm ? priorirtyForm : {}}
+                                initialValues={priorirtyForm ? {priority: priorirtyForm} : {}}
                                 enableReinitialize
                                 onSubmit={(values, { setSubmitting }) => {
                                     if (values.id)
@@ -78,7 +78,7 @@ const Priority = () => {
                                                 </select>):(
                                                     <>
                                                     <p>{values.priority}</p>
-                                                    <button type="button" className="btn btn-primary mr-2" onChange={()=>setEnable(false)}>
+                                                    <button type="button" className="btn btn-primary mr-2" onClick={()=>setEnable(false)}>
                                                         Edit
                                                     </button></>
                                                 )}

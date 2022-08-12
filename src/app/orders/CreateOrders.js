@@ -69,38 +69,23 @@ const CreateOrders = () => {
           const wsname = wb.SheetNames[0];
           const ws = wb.Sheets[wsname];
           /* Convert array of arrays */
-          const data = XLSX.utils.sheet_to_csv(ws, { header: 1 });
+          var result = {};
+          wb.SheetNames.forEach(function(sheetName) {
+			var roa = XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
+			if(roa.length > 0){
+				result = roa;
+			}
+          });
           /* Update state */
           //console.log("Data>>>" + data);// shows that excel data is read
           //console.log(convertToJson(data)); // shows data in json format
-          axios.post(CREATE_ORDER_BULK,convertToJson(data)).then(res=>{
+          axios.post(CREATE_ORDER_BULK,result).then(res=>{
               
           })
         };
         reader.readAsBinaryString(f);
       }
     
-      const convertToJson = (csv) => {
-        var lines = csv.split("\n");
-    
-        var result = [];
-    
-        var headers = lines[0].split(",");
-    
-        for (var i = 1; i < lines.length; i++) {
-          var obj = {};
-          var currentline = lines[i].split(",");
-    
-          for (var j = 0; j < headers.length; j++) {
-            obj[headers[j]] = currentline[j];
-          }
-    
-          result.push(obj);
-        }
-    
-        //return result; //JavaScript object
-        return JSON.stringify(result); //JSON
-      }
       const navigate = () => {
           setToast(false);
           setFailToast(false);

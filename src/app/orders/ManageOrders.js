@@ -100,12 +100,13 @@ const ManageOrders = () => {
                         </div>
                       </th>
                       <th> ORDER ID </th>
+                      <th style={{ width: "120px" }}> AWB </th>
                       <th style={{ width: "150px" }}> ORDER DATE & TIME </th>
                       <th> CHANNEL </th>
                       <th style={{ width: "134px" }}> PRODUCT DETAILS </th>
                       <th> PAYMENT </th>
                       <th style={{ width: "176px" }}> CUSTOMER DETAILS </th>
-                      <th style={{ width: "115px" }}> ORDER STATUS </th>
+                      <th style={{ width: "115px" }}> STATUS </th>
                       <th>ACTIONS </th>
                     </tr>
                   </thead>
@@ -131,6 +132,7 @@ const ManageOrders = () => {
                               <span>{ele.id} </span>
                             </div>
                           </td>
+                          <td>{ele.tracking_id}</td>
                           <td> {new Date(ele.created_at).toLocaleString()} </td>
                           <td> Manual </td>
                           <td>
@@ -141,7 +143,7 @@ const ManageOrders = () => {
                               </div>
                             </div>
                           </td>
-                          <td> ₹{ele.product_price * ele.product_quantity} / - cod </td>
+                          <td> ₹{ele.product_price * ele.product_quantity} / - {ele.payment_type} </td>
                           <td>
                             {ele.customer && (
                             <div className="custdetsils">
@@ -150,7 +152,7 @@ const ManageOrders = () => {
                               <a href="#">VIEW / EDIT DETAILS</a>
                             </div>)}
                           </td>
-                          <td>Approved</td>
+                          <td>{ele.status=='TO_BE_PROCESSED'?'Approved':ele.status}</td>
                           <td>
                             {status == 'TO_BE_PROCESSED' && (
                               <>
@@ -161,10 +163,10 @@ const ManageOrders = () => {
                                   Cancel
                                 </a>
                               </>)}
-                            {status == 'SHIPPED' && (
+                            {status == 'PROCESSED' && (
                               <>
                                 <button type="button" class="btn btn-light btn-fw">
-                                  Ready to ship
+                                  Shipping Label
                                 </button>
                               </>
                             )}

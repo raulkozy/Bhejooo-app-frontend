@@ -80,7 +80,11 @@ const CreateOrders = () => {
           //console.log("Data>>>" + data);// shows that excel data is read
           //console.log(convertToJson(data)); // shows data in json format
           axios.post(CREATE_ORDER_BULK,result).then(res=>{
-              
+              setLgShow(false);
+              setToast(true);
+          },
+          e=>{
+              setFailToast(true);
           })
         };
         reader.readAsBinaryString(f);

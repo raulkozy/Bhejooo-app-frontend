@@ -58,6 +58,7 @@ const Kyc = () => {
                                       setToast(true);
                                   },err=>{
                                       setFailToast(true);
+                                      setSubmitting(false);
                                   })
                                 else
                                   axios.post(KYC_URL, values).then(async (res)=>{
@@ -65,6 +66,7 @@ const Kyc = () => {
                                       setToast(true);
                                   },err=>{
                                       setFailToast(true);
+                                      setSubmitting(false);
                                   })
                             }}
                             render=

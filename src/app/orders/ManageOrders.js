@@ -1,18 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./ManageOrders.scss";
 import { Trans } from "react-i18next";
-import { Form } from "react-bootstrap";
+import { Form, Toast } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import axios from "axios";
 import * as XLSX from "xlsx";
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const ORDER_URL = `${API_URL}/order/list`;
+export const UPDATE_ORDER = `${API_URL}/order`;
 
 const ManageOrders = () => {
   const [list, setList] = useState();
   const [status, setStatus] = useState('TO_BE_PROCESSED');
   const [checked, setChecked] = useState();
+  const [toast, setToast] = useState(false);
+  const [failtoast, setFailToast] = useState(false);
   const table = useRef();
   useEffect(() => {
     axios.get(ORDER_URL).then(res => {
@@ -27,6 +30,36 @@ const ManageOrders = () => {
 
     // Package and Release Data (`writeFile` tries to write and save an XLS file)
     XLSX.writeFile(workbook, "Report.xls");
+  };
+  const shipOrderAll = () => {
+    if(checked) {
+      axios.put(UPDATE_ORDER+'?move_to=PROCESSED',{order_ids: list.map(o=>o.id)}).then(res=>{
+        setToast(true);
+      },
+      e=>{
+        setFailToast(true);
+      })
+    }
+  };
+  const shipOrder = (id) => {
+    axios.put(UPDATE_ORDER+'?move_to=PROCESSED',{order_ids: [id]}).then(res=>{
+        setToast(true);
+      },
+      e=>{
+        setFailToast(true);
+    })
+  };
+  const cancelOrder = (id) => {
+    axios.put(UPDATE_ORDER+'?move_to=CANCELLED',{order_ids: [id]}).then(res=>{
+        setToast(true);
+      },
+      e=>{
+        setFailToast(true);
+    })
+  };
+  const navigate = () => {
+    setToast(false);
+    setFailToast(false);
   };
   return (
     // <div className="row">
@@ -65,7 +98,7 @@ const ManageOrders = () => {
         <div className="bulk-action">
           <div className="row">
             {status == 'TO_BE_PROCESSED' && (
-                <button type="button" className="btn btn-success btn-fw" disabled={!checked}>
+                <button type="button" className="btn btn-success btn-fw" disabled={!checked} onClick={shipOrderAll}>
                   I want to ship
                 </button>)}
             {status == 'PROCESSED' && (    
@@ -156,10 +189,10 @@ const ManageOrders = () => {
                           <td>
                             {status == 'TO_BE_PROCESSED' && (
                               <>
-                                <button type="button" class="btn btn-success btn-fw">
+                                <button type="button" class="btn btn-success btn-fw" onClick={()=>shipOrder(ele.id)}>
                                   I want to ship
                                 </button>
-                                <a href="#" className="cancelText">
+                                <a href="#" className="cancelText" onClick={()=>cancelOrder(ele.id)}>
                                   Cancel
                                 </a>
                               </>)}
@@ -534,6 +567,23 @@ const ManageOrders = () => {
           </div>
         </div>
       </div>
+
+      {toast && (<Toast onClose={navigate} className="toast-success">
+          <Toast.Header>
+            <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
+            <strong className="me-auto">Success</strong>
+          </Toast.Header>
+          <Toast.Body> Sucessful.</Toast.Body>
+        </Toast>
+        )}
+        {failtoast && (<Toast onClose={navigate} className="toast-danger">
+          <Toast.Header>
+            <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
+            <strong className="me-auto">Failure</strong>
+          </Toast.Header>
+          <Toast.Body> Failed.</Toast.Body>
+        </Toast>
+        )}
     </div>
   );
 };

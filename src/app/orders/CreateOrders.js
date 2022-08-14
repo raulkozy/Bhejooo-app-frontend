@@ -152,6 +152,7 @@ const CreateOrders = () => {
                                     setToast(true);
                                 },err=>{
                                     setFailToast(true);
+                                    setSubmitting(false);
                                 })
                                 }, 400);
                             }}

@@ -38,6 +38,7 @@ class Sidebar extends Component {
       { path: '/kyc', state: 'kycMenuOpen'},
       { path: '/finances', state: 'pricing'},
       { path: '/tools', state: 'tools'},
+      { path: '/settings', state: 'settings'},
       { path: '/basic-ui', state: 'basicUiMenuOpen' },
       { path: '/form-elements', state: 'formElementsMenuOpen' },
       { path: '/tables', state: 'tablesMenuOpen' },
@@ -256,7 +257,7 @@ class Sidebar extends Component {
                 <ul className="nav flex-column sub-menu">
                   <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/buttons') ? 'nav-link active' : 'nav-link'} ><Trans>API Integration</Trans></Link></li>
                   <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/dropdowns') ? 'nav-link active' : 'nav-link'} ><Trans>User Role Management</Trans></Link></li>
-                  <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Channel Integration</Trans></Link></li>
+                  <li className="nav-item"> <Link className={this.isPathActive('/settings/channel') ? 'nav-link active' : 'nav-link'} to='/settings/channel'><Trans>Channel Integration</Trans></Link></li>
                 </ul>
               </div>
             </Collapse>

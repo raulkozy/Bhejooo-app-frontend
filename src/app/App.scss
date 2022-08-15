@@ -2,7 +2,7 @@
 
 /* === Plugin styles === */
 
-
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css');
 @import "~slick-carousel/slick/slick.css";
 @import "~slick-carousel/slick/slick-theme.css";
 
@@ -118,3 +118,14 @@
       font-size: 16px;
     }
   }
+.modal-content{
+  background: #dce6ed;
+  color: #2c2e33;
+}
+.fa-6 {
+  font-size: 4em;
+  color: #245b7d;
+}
+.fa-6:hover {
+  color: #0090e7;
+}

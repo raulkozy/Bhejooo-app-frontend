@@ -1,21 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Kyc.scss";
 import { Trans } from "react-i18next";
 import { Form, Toast } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import axios from 'axios';
 import { Formik } from 'formik';
+import { trackPromise } from "react-promise-tracker";
 
-const API_URL = process.env.API_URL || 'http://ec2-15-207-99-109.ap-south-1.compute.amazonaws.com';
+const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const KYC_URL = `${API_URL}/user/kyc`;
+export const BANK_LIST = `${API_URL}/general/bankList`;
 
 const Kyc = () => {
   const [toast, setToast] = useState(false);
   const [failtoast, setFailToast] = useState(false);
+  const [banklist, setbanklist] = useState();
+  const [kycForm, setKycForm] = useState();
   const navigate = () => {
     setToast(false);
     setFailToast(false);
   }
+  useEffect(()=>{
+    trackPromise(axios.get(BANK_LIST).then(res=>{
+      setbanklist(res.data);
+    }))
+    trackPromise(axios.get(KYC_URL).then(res=>{
+      setKycForm(res.data);
+    }))
+  },[])
   return (
     // <div className="row">
     //     <div className="col-12 grid-margin">
@@ -38,18 +50,27 @@ const Kyc = () => {
               <h4 className="card-title">Kyc form</h4>
 
               <Formik
-                            initialValues={{}}
+                            initialValues={kycForm?kycForm:{}}
+                            enableReinitialize
                             onSubmit={(values, { setSubmitting }) => {
-                                setTimeout(() => {
-                                axios.post(KYC_URL, values).then(async (res)=>{
-                                    setSubmitting(false);
-                                    setToast(true);
-                                },err=>{
-                                    setFailToast(true);
-                                })
-                                }, 400);
+                                if(values.id)  
+                                  trackPromise(axios.put(KYC_URL, values).then(async (res)=>{
+                                      setSubmitting(false);
+                                      setToast(true);
+                                  },err=>{
+                                      setFailToast(true);
+                                      setSubmitting(false);
+                                  }))
+                                else
+                                  trackPromise(axios.post(KYC_URL, values).then(async (res)=>{
+                                      setSubmitting(false);
+                                      setToast(true);
+                                  },err=>{
+                                      setFailToast(true);
+                                      setSubmitting(false);
+                                  }))
                             }}
-                            >
+                            render=
                             {({
                                 values,
                                 errors,
@@ -69,8 +90,9 @@ const Kyc = () => {
                       type="text"
                       id="exampleInputUsername1"
                       className="form-control"
-                      name="website_link"
+                      name="account_doc_url"
                       onChange={handleChange}
+                      defaultValue={values && values.account_doc_url}
                     />
                   </div>
                 </div>
@@ -85,6 +107,7 @@ const Kyc = () => {
                       className="form-control"
                       name="account_number"
                       onChange={handleChange}
+                      defaultValue={values && values.account_number}
                       required
                     />
                   </div>
@@ -108,8 +131,9 @@ const Kyc = () => {
                     <label for="exampleInputEmail1">Bank <sup>*</sup></label>
                     <select required name="bank_name" onChange={handleChange} className="form-control" id="exampleSelectGender">
                       <option>Select One</option>
-                      <option value={'SBI'}>SBI</option>
-                      <option value={'HDFC'}>HDFC</option>
+                      {banklist && banklist.map(ele=>
+                        <option value={ele} selected={values && values.bank_name==ele}>{ele}</option>
+                      )}
                     </select>
                   </div>
                 </div>
@@ -118,9 +142,9 @@ const Kyc = () => {
                   <div className="form-group">
                     <label for="exampleInputEmail1">Account Type <sup>*</sup></label>
                     <select required name="account_type" onChange={handleChange} className="form-control" id="exampleSelectGender">
-                      <option>Select One</option>
-                      <option >Savings </option>
-                      <option>Current</option>
+                      <option value="">Select One</option>
+                      <option value="Savings" selected={values && values.account_type=="Savings"}>Savings</option>
+                      <option value="Current" selected={values && values.account_type=="Current"}>Current</option>
                     </select>
                   </div>
                 </div>
@@ -135,6 +159,7 @@ const Kyc = () => {
                       className="form-control"
                       name="ifsc"
                       onChange={handleChange}
+                      defaultValue={values && values.ifsc}
                       required
                     />
                   </div>
@@ -152,6 +177,7 @@ const Kyc = () => {
                       className="form-control"
                       name="account_holder_name"
                       onChange={handleChange}
+                      defaultValue={values && values.account_holder_name}
                       required
                     />
                   </div>
@@ -167,6 +193,7 @@ const Kyc = () => {
                       className="form-control"
                       name="pan_details.identity_number"
                       onChange={handleChange}
+                      defaultValue={values && values.pan}
                       required
                     />
                   </div>
@@ -201,6 +228,7 @@ const Kyc = () => {
                       className="form-control"
                       name="gst_details.identity_number"
                       onChange={handleChange}
+                      defaultValue={values && values.gstin}
                     />
                   </div>
                 </div>
@@ -231,7 +259,7 @@ const Kyc = () => {
                 
               </form>
                             )}
-              </Formik>              
+              />              
             </div>
           </div>
         </div>
@@ -241,7 +269,7 @@ const Kyc = () => {
             <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
             <strong className="me-auto">Success</strong>
           </Toast.Header>
-          <Toast.Body>Ordered Sucessfully.</Toast.Body>
+          <Toast.Body>Processed Sucessfully.</Toast.Body>
         </Toast>
         )}
         {failtoast && (<Toast onClose={navigate} className="toast-danger">
@@ -249,7 +277,7 @@ const Kyc = () => {
             <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
             <strong className="me-auto">Failure</strong>
           </Toast.Header>
-          <Toast.Body>Order Failed.</Toast.Body>
+          <Toast.Body>Processed Failed.</Toast.Body>
         </Toast>
         )}
     </>

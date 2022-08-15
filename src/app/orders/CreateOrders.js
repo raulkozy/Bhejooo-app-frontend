@@ -1,19 +1,24 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Trans } from 'react-i18next';
-import { Button, Card, Form, Table, Toast } from 'react-bootstrap';
+import { Button, Card, Form, Modal, Table, Toast } from 'react-bootstrap';
 import * as XLSX from "xlsx";
 import axios from 'axios';
 import { Formik } from 'formik';
+import { useHistory } from 'react-router-dom';
+import { trackPromise } from 'react-promise-tracker';
 
-const API_URL = process.env.API_URL || 'http://ec2-15-207-99-109.ap-south-1.compute.amazonaws.com';
+const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const CREATE_ORDER_BULK = `${API_URL}/order/create/bulk`;
 export const CREATE_ORDER = `${API_URL}/order/create`;
 export const PIN_DETAILS = `${API_URL}/general/pinDetails?pinCode=`;
 export const PRODUCT_CATEGORY = `${API_URL}/general/productCategoryList`;
 export const SHIPPING_RATE = `${API_URL}/calculator/shiping-rate`;
 export const PICKUP_ADDRESS = `${API_URL}/address/pickupAddress`;
+export const TEMPLATE = `${API_URL}/document/bulkimporttemplate`;
 
 const CreateOrders = () => {
+    const [lgShow, setLgShow] = useState(false);
+    const [pickup_pin, setPickup_pin] = useState();
     const [addressList, setAddressList] = useState();
     const [courier, setCourier] = useState();
     const [userData, setUserData] = useState({});
@@ -22,6 +27,25 @@ const CreateOrders = () => {
     const [failtoast, setFailToast] = useState(false);
     const fileUploader = useRef();
     const [file, setFile] = useState();
+    const history = useHistory();
+
+      const downloadTemplate = () => {
+        trackPromise(axios.get(`${TEMPLATE}`,{
+            responseType: 'blob',
+        })
+            .then(({data}) => {
+                const href = window.URL.createObjectURL(data);
+                const link = document.createElement('a');
+                link.href = href;
+                link.setAttribute('download', 'Bulk_Order_template.xlsx'); //or any other extension
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch((err) => {
+                return Promise.reject({ Error: 'Something Went Wrong', err });
+            }))
+      }
     
       const filePathset = (e) => {
         e.stopPropagation();
@@ -46,52 +70,42 @@ const CreateOrders = () => {
           const wsname = wb.SheetNames[0];
           const ws = wb.Sheets[wsname];
           /* Convert array of arrays */
-          const data = XLSX.utils.sheet_to_csv(ws, { header: 1 });
+          var result = {};
+          wb.SheetNames.forEach(function(sheetName) {
+			var roa = XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
+			if(roa.length > 0){
+				result = roa;
+			}
+          });
           /* Update state */
           //console.log("Data>>>" + data);// shows that excel data is read
           //console.log(convertToJson(data)); // shows data in json format
-          axios.post(CREATE_ORDER_BULK,convertToJson(data)).then(res=>{
-              
-          })
+          trackPromise(axios.post(CREATE_ORDER_BULK,result).then(res=>{
+              setLgShow(false);
+              setToast(true);
+          },
+          e=>{
+              setFailToast(true);
+          }))
         };
         reader.readAsBinaryString(f);
       }
     
-      const convertToJson = (csv) => {
-        var lines = csv.split("\n");
-    
-        var result = [];
-    
-        var headers = lines[0].split(",");
-    
-        for (var i = 1; i < lines.length; i++) {
-          var obj = {};
-          var currentline = lines[i].split(",");
-    
-          for (var j = 0; j < headers.length; j++) {
-            obj[headers[j]] = currentline[j];
-          }
-    
-          result.push(obj);
-        }
-    
-        //return result; //JavaScript object
-        return JSON.stringify(result); //JSON
-      }
       const navigate = () => {
           setToast(false);
           setFailToast(false);
       }
       const fetchpindetails=(pin)=>{
-        axios.get(PIN_DETAILS+pin).then(res=>{
+        trackPromise(axios.get(PIN_DETAILS+pin).then(res=>{
           const customer = {};
           customer.city = res.data.city;
           customer.state = res.data.state;
           setUserData(customer);
-        })
+        }))
       }
       const fetchshippingrate=(pin,values) =>{
-          axios.get(SHIPPING_RATE+'?source='+values.customer.address.Pin+'&destination='+pin+'&payment_type='+values.order.payment_mode+'&weight='+values.shipment_details.weight+'&productValue='+values.order.product_price,{
+          if(values.customer && values.order && values.shipment_details)
+          trackPromise(axios.get(SHIPPING_RATE+'?source='+values.customer.address.Pin+'&destination='+pin+'&payment_type='+values.order.payment_mode+'&weight='+values.shipment_details.weight+'&productValue='+values.order.product_price,{
               headers:{
                   'length': values.shipment_details.volumetric_weight.length,
                   'width': values.shipment_details.volumetric_weight.width,
@@ -99,15 +113,15 @@ const CreateOrders = () => {
               }
           }).then(res=>{
             setCourier(res.data.rates)
-          })
+          }))
       }
       useEffect(()=>{
-          axios.get(PRODUCT_CATEGORY).then((res)=>{
+          trackPromise(axios.get(PRODUCT_CATEGORY).then((res)=>{
             setCategory(res.data)
-          })
-          axios.get(PICKUP_ADDRESS).then(res=>{
+          }))
+          trackPromise(axios.get(PICKUP_ADDRESS).then(res=>{
               setAddressList(res.data)
-          })
+          }))
       },[])
     
     return (
@@ -118,38 +132,28 @@ const CreateOrders = () => {
                     <div className="card-body" style={{ "display": "flex", "flexDirection": "row", "justifyContent": "space-between", "flexFlow": "row wrap" }}>
                         <h4 className="card-title">Create Orders</h4>
                         {/* <i className="menu-arrow"></i> */}
-                        <div>
-                        <input
-                            type="file"
-                            id="file"
-                            ref={fileUploader}
-                            onChange={e=>filePathset(e)}
-                            style={{marginRight: '-100px'}}
-                            />
-                            <button className='btn btn-primary' onClick={readFile}>Bulk Upload</button>
-                        </div>
+                        <Button onClick={() => setLgShow(true)}>Bulk Upload</Button>
                     </div>
                 </div>
             </div>
         </div>
         <div>
-            <div className="d-flex align-items-center auth px-0 h-100">
+            <div className="align-items-center auth px-0 h-100">
                 <div className="row w-100 mx-0">
                     <div className="col-lg-12 mx-auto">
                         {/* <div className="card text-left py-5 px-4 px-sm-5"> */}
-                        <h1 className="title-text" style={{"font-size": "24px"}}>Single Order</h1> 
+                        <h1 className="title-text" style={{fontSize: "24px"}}>Single Order</h1> 
                         {/* </div> */}
                         <Formik
-                            initialValues={{order:{payment_mode:'Prepaid'}}}
+                            initialValues={{order:{payment_mode:'PREPAID'}}}
                             onSubmit={(values, { setSubmitting }) => {
-                                setTimeout(() => {
-                                axios.post(CREATE_ORDER, {...values, customer: {...values.customer,address:{...values.customer.address,...userData}}}).then(async (res)=>{
+                                trackPromise(axios.post(CREATE_ORDER, {...values, customer: {...values.customer,address:{...values.customer.address,...userData}}}).then(async (res)=>{
                                     setSubmitting(false);
                                     setToast(true);
                                 },err=>{
                                     setFailToast(true);
-                                })
-                                }, 400);
+                                    setSubmitting(false);
+                                }));
                             }}
                             >
                             {({
@@ -212,8 +216,8 @@ const CreateOrders = () => {
                                             {/* <p style={{ "color": "red" }}>{mobileNoError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "30%" }}>
-                                            <input type="text" name='customer.address.landmark' required className={`form-control form-control-lg border`}
-                                                id="exampleInputUsername1" placeholder="Landmark*" onChange={handleChange}
+                                            <input type="text" name='customer.address.landmark' className={`form-control form-control-lg border`}
+                                                id="exampleInputUsername1" placeholder="Landmark" onChange={handleChange}
                                             // value={firstName} onChange={e => handleFirstName(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{firstNameError}</p> */}
@@ -305,7 +309,7 @@ const CreateOrders = () => {
                                     </div>
                                     <div className="form-check" style={{ "paddingLeft": "20px" }}>
                                         <label className="form-check-label">
-                                            <input type="radio" className="form-check-input" name="order.payment_mode" id="optionsRadios2" value="Prepaid" onChange={handleChange} defaultChecked />
+                                            <input type="radio" className="form-check-input" name="order.payment_mode" id="optionsRadios2" value="PREPAID" onChange={handleChange} defaultChecked />
                                             <i className="input-helper"></i>
                                             <div style={{ "display": "flex", "flexDirection": "row", "paddingLeft": "10px" }}>
                                                 <span className="menu-icon"><i className="mdi mdi-credit-card text-warning"></i></span>
@@ -316,39 +320,70 @@ const CreateOrders = () => {
                                 </div>
                             </Form.Group>
 
+
+                            <h4>Address Details:</h4>
+                                <div className="row">
+                                {addressList && addressList.map(ele=>
+                                <Card className='mb-2' style={{ width: '18rem', border: values.pickup_details && values.pickup_details.address_id==ele.id?'0.5px solid #fff':'' }}>
+                                <Card.Body>
+                                    <div className="form-check">
+                                        <label className="form-check-label">
+                                            <input type="radio" className="form-check-input" name="pickup_details.address_id" id="optionsRadios1" value={ele.id} onChange={handleChange} onClick={()=>setPickup_pin(ele.Pin)} />
+                                            <i className="input-helper"></i>
+                                            <div style={{ "display": "flex", "flexDirection": "row", "paddingLeft": "10px" }}>
+                                                <Card.Title>{ele.address_lane1}</Card.Title>
+                                            </div>
+                                        </label>
+                                        <i className="fas fa-edit" style={{position: 'absolute',top: '0px', right: '-10px',cursor: 'pointer'}} onClick={()=>history.push('../address/'+ele.id)}></i>
+                                    </div>
+                                    <Card.Text>
+                                    {ele.address_lane1},&nbsp;
+                                    {ele.address_lane2},&nbsp;
+                                    {ele.city},&nbsp;{ele.state}-{ele.Pin}
+                                    </Card.Text>
+                                </Card.Body>
+                                </Card>)}
+                                <Card className="text-center" style={{cursor: 'pointer'}}>
+                                    <Card.Title>&nbsp;</Card.Title>
+                                    <Card.Body>
+                                        <i className="fa fa-plus fa-6" aria-hidden="true" onClick={()=>history.push('../address')}></i>
+                                    </Card.Body>
+                                </Card>
+                                </div>
+
                             <h4>Shipment Details:</h4>
                                 <div>
                                     <div style={{ "display": "flex", "flexDirection": "row", "justifyContent": "space-between", "flexFlow": "row wrap" }}>
                                         <div className="form-group" style={{ "width": "30%" }}>
                                             <input type="number" name='shipment_details.volumetric_weight.length' required className={`form-control form-control-lg border`}
-                                                id="exampleInputUsername1" placeholder="Volumetric Length*" onChange={handleChange}
+                                                id="exampleInputUsername1" placeholder="Volumetric Length*" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
                                             // value={firstName} onChange={e => handleFirstName(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{firstNameError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "30%" }}>
                                             <input type="number" name='shipment_details.volumetric_weight.width' required className={`form-control form-control-lg border`} 
-                                                id="exampleInputUsername2" placeholder="Volumetric Width*" onChange={handleChange}
+                                                id="exampleInputUsername2" placeholder="Volumetric Width*" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
                                             // value={lastName} onChange={e => handleLastName(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{lastNameError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "30%" }}>
                                             <input type="number" name='shipment_details.volumetric_weight.height' className={`form-control form-control-lg border `} 
-                                                id="exampleInputPassword1" placeholder="Volumetric Height" onChange={handleChange}
+                                                id="exampleInputPassword1" placeholder="Volumetric Height" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
                                             // value={password} onChange={e => handlePassword(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{passwordError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "45%" }}>
-                                            <input type="number" name='shipment_details.weight' className={`form-control form-control-lg border `} 
-                                                id="exampleInputEmail1" placeholder="Weight" onChange={handleChange}
+                                            <input type="text" name='shipment_details.weight' className={`form-control form-control-lg border `} 
+                                                id="exampleInputEmail1" placeholder="Weight(Kgs)" onChange={handleChange} onKeyUp={()=>fetchshippingrate(pickup_pin,values)}
                                             // value={email} onChange={e => handleEmail(e)} 
                                             />
                                             {/* <p style={{ "color": "red" }}>{emailError}</p> */}
                                         </div>
                                         <div className="form-group" style={{ "width": "45%" }}>
-                                            <input type="number" name='shipment_details.pickup_date' className={`form-control form-control-lg border `} 
+                                            <input type="number" name='shipment_details.pickup_date' value={pickup_pin} className={`form-control form-control-lg border `} 
                                                 id="exampleInputEmail1" placeholder="Pickup Pin" onChange={(e)=>fetchshippingrate(e.target.value,values)}
                                             // value={email} onChange={e => handleEmail(e)} 
                                             />
@@ -359,7 +394,7 @@ const CreateOrders = () => {
                                         <Table className="leader-board" striped hover variant="dark">
                                             
                                             <tbody>
-                                                {courier && courier.map(ele=>
+                                                {courier && courier.map(ele=>(
                                                 <tr>
                                                     <td>
                                                     <div className="form-check">
@@ -367,37 +402,23 @@ const CreateOrders = () => {
                                                             <input type="radio" className="form-check-input" name="shipment_details.carrier.carrier" id="optionsRadios1" value={ele.carrier} onChange={handleChange} />
                                                             <i className="input-helper"></i>
                                                             <div style={{ "display": "flex", "flexDirection": "row", "paddingLeft": "10px" }}>
-                                                                <span className="menu-title" style={{ "paddingLeft": "10px", color: "#FFF" }}><Trans>{ele.carrier}</Trans></span>
+                                                                <span className="menu-title" style={{ "paddingLeft": "10px", color: "#FFF" }}>{ele.carrier}</span>
                                                             </div>
                                                         </label>
                                                     </div>
                                                     </td>
                                                     <td>
                                                         <span className="menu-icon"><i className="mdi mdi-currency-inr text-success"></i></span>
-                                                        <span className="menu-title" style={{ "paddingLeft": "10px", color: "#FFF" }}><Trans>{ele.rate}</Trans></span>
+                                                        <span className="menu-title" style={{ "paddingLeft": "10px", color: "#FFF" }}>{ele.rate}</span>
                                                     </td>
-                                                </tr>)}
+                                                </tr>))}
                                             </tbody>
                                         </Table>
                                     </div>
                                 </div>
                                 <br />
 
-                            <h4>Address Details:</h4>
-                                <div>
-                                {addressList && addressList.map(ele=>
-                                <Card className='mb-2' style={{ width: '18rem', border: values.pickup_details && values.pickup_details.address_id==ele.id?'0.5px solid #fff':'' }}>
-                                <Card.Body>
-                                    <Card.Title>{ele.address_lane1}</Card.Title>
-                                    <Card.Text>
-                                    {ele.address_lane1},&nbsp;
-                                    {ele.address_lane2},&nbsp;
-                                    {ele.city},&nbsp;{ele.state}-{ele.Pin}
-                                    </Card.Text>
-                                    <Button variant="primary" onClick={()=>setFieldValue('pickup_details.address_id',ele.id)}>Select</Button>
-                                </Card.Body>
-                                </Card>)}
-                                </div>
+
                             {/* <h4>Pickup Details:</h4>
                                 <div>
                                     <div style={{ "display": "flex", "flexDirection": "row", "justifyContent": "space-between", "flexFlow": "row wrap" }}>
@@ -410,7 +431,9 @@ const CreateOrders = () => {
                                     </div>
                                 </div>   */}
                             <br />      
-                            <button className={'btn btn-primary btn-lg'} type='submit'>Order</button>
+                            <button className={'btn btn-primary btn-lg'} type='submit' disabled={isSubmitting}>
+                                {isSubmitting && (<i className="fa fa-spinner fa-spin"></i>)}Order
+                            </button>
                             </div>
                             </form>
                             )}
@@ -441,6 +464,34 @@ const CreateOrders = () => {
           <Toast.Body>Order Failed.</Toast.Body>
         </Toast>
         )}
+            <Modal
+                className='modal'
+                size="md"
+                show={lgShow}
+                onHide={() => setLgShow(false)}
+                aria-labelledby="example-modal-sizes-title-lg"
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="example-modal-sizes-title-lg">
+                                Bulk Upload
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        <input
+                            type="file"
+                            id="file"
+                            ref={fileUploader}
+                            onChange={e=>filePathset(e)}
+                            style={{marginRight: '-100px'}}
+                            />
+                            <br />
+                            <span style={{fontSize: '12px'}}>(<b>Note</b>: Please refer to the <a href='javascript:;' onClick={downloadTemplate}>template</a> before uploading)</span>
+                            <hr />
+                            <button className='btn btn-primary' onClick={readFile}>Create Order</button>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </>
     )
 }

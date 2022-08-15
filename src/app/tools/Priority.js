@@ -2,6 +2,7 @@ import { Formik } from "formik";
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { Toast } from "react-bootstrap";
+import { trackPromise } from "react-promise-tracker";
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const PRIORItY_URL = `${API_URL}/user/courier-priority`;
@@ -18,13 +19,13 @@ const Priority = () => {
         setFailToast(false);
     }
     useEffect(()=>{
-        axios.get(PARTNER_LIST).then(res=>{
+        trackPromise(axios.get(PARTNER_LIST).then(res=>{
             setPartner(res.data);
-        })
-        axios.get(PRIORItY_URL).then(res=>{
+        }))
+        trackPromise(axios.get(PRIORItY_URL).then(res=>{
             setpriorirtyForm(res.data);
             setEnable(true);
-        })
+        }))
     },[])
     return (
         <>
@@ -40,20 +41,22 @@ const Priority = () => {
                                 initialValues={priorirtyForm ? {priority: priorirtyForm} : {}}
                                 enableReinitialize
                                 onSubmit={(values, { setSubmitting }) => {
-                                    if (values.id)
-                                        axios.put(PRIORItY_URL, values).then(async (res) => {
+                                    if (!enable)
+                                           trackPromise(axios.put(PRIORItY_URL, values).then(async (res) => {
                                             setSubmitting(false);
                                             setToast(true);
                                         }, err => {
                                             setFailToast(true);
-                                        })
+                                            setSubmitting(false);
+                                        }));
                                     else
-                                        axios.post(PRIORItY_URL, values).then(async (res) => {
+                                        trackPromise(axios.post(PRIORItY_URL, values).then(async (res) => {
                                             setSubmitting(false);
                                             setToast(true);
                                         }, err => {
                                             setFailToast(true);
-                                        })
+                                            setSubmitting(false);
+                                        }))
                                 }}
                                 render=
                                 {({

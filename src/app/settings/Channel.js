@@ -2,6 +2,7 @@ import { Formik } from "formik";
 import React, { useState } from "react";
 import axios from 'axios';
 import { Toast } from "react-bootstrap";
+import { trackPromise } from "react-promise-tracker";
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const CHANNEL_INTEGRATION = `${API_URL}/integration/create`;
@@ -28,19 +29,19 @@ const Channel = () => {
                                 initialValues={{}}
                                 enableReinitialize
                                 onSubmit={(values, { setSubmitting }) => {
-                                        axios.post(CHANNEL_INTEGRATION+'?=provider=SHOPIFY', values).then(async (res) => {
+                                        trackPromise(axios.post(CHANNEL_INTEGRATION+'?=provider=SHOPIFY', values).then(async (res) => {
                                             setSubmitting(false);
                                             setToast(true);
-                                            axios.get(CHANNEL_FETCHORDERS+'?provider=SHOPIFY').then(res=>{
+                                            trackPromise(axios.get(CHANNEL_FETCHORDERS+'?provider=SHOPIFY').then(res=>{
                                                 setToast(true);
                                             },
                                             err=>{
                                                 setFailToast(true);
-                                            })
+                                            }))
                                         }, err => {
                                             setFailToast(true);
                                             setSubmitting(false);
-                                        })
+                                        }))
                                 }}
                                 render=
                                 {({

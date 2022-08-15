@@ -5,6 +5,7 @@ import { Form, Toast } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import axios from "axios";
 import * as XLSX from "xlsx";
+import { trackPromise } from "react-promise-tracker";
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const ORDER_URL = `${API_URL}/order/list`;
@@ -18,9 +19,9 @@ const ManageOrders = () => {
   const [failtoast, setFailToast] = useState(false);
   const table = useRef();
   useEffect(() => {
-    axios.get(ORDER_URL).then(res => {
+    trackPromise(axios.get(ORDER_URL).then(res => {
       setList(res.data);
-    })
+    }))
   }, []);
   const exportToExcel = () => {
     // Acquire Data (reference to the HTML table)
@@ -33,29 +34,29 @@ const ManageOrders = () => {
   };
   const shipOrderAll = () => {
     if(checked) {
-      axios.put(UPDATE_ORDER+'?move_to=PROCESSED',{order_ids: list.map(o=>o.id)}).then(res=>{
+      trackPromise(axios.put(UPDATE_ORDER+'?move_to=PROCESSED',{order_ids: list.map(o=>o.id)}).then(res=>{
         setToast(true);
       },
       e=>{
         setFailToast(true);
-      })
+      }))
     }
   };
   const shipOrder = (id) => {
-    axios.put(UPDATE_ORDER+'?move_to=PROCESSED',{order_ids: [id]}).then(res=>{
+    trackPromise(axios.put(UPDATE_ORDER+'?move_to=PROCESSED',{order_ids: [id]}).then(res=>{
         setToast(true);
       },
       e=>{
         setFailToast(true);
-    })
+    }))
   };
   const cancelOrder = (id) => {
-    axios.put(UPDATE_ORDER+'?move_to=CANCELLED',{order_ids: [id]}).then(res=>{
+    trackPromise(axios.put(UPDATE_ORDER+'?move_to=CANCELLED',{order_ids: [id]}).then(res=>{
         setToast(true);
       },
       e=>{
         setFailToast(true);
-    })
+    }))
   };
   const navigate = () => {
     setToast(false);

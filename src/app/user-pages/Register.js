@@ -385,7 +385,7 @@ const Register = () => {
                       "email": email,
                       "businessName": businessName,
                       "typeOfBusiness": businessType,
-                      "businessAddress": businessAddress,
+                      "businessAddress": {...values.businessAddress,...userData},
                       "documents": {
                         "name": "string",
                         "url": "string"

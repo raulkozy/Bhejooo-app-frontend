@@ -56,7 +56,9 @@ const Address = () => {
                                         "address_lane1": values.address_lane1,
                                         "address_lane2": values.address_lane2,
                                         "landmark": values.landmark,
-                                        "Pin": values.Pin
+                                        "Pin": values.Pin,
+                                        "name": values.name,
+                                        "phoneNo": values.phoneNo,
                                     }
                                     if (values.id)
                                         trackPromise(axios.put(ADDRESS_URL+'/'+values.id, {...payload,...userData}).then(async (res) => {

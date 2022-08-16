@@ -5,6 +5,7 @@ import * as XLSX from "xlsx";
 import axios from 'axios';
 import { Formik } from 'formik';
 import { useHistory } from 'react-router-dom';
+import { trackPromise } from 'react-promise-tracker';
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const CREATE_ORDER_BULK = `${API_URL}/order/create/bulk`;
@@ -29,7 +30,7 @@ const CreateOrders = () => {
     const history = useHistory();
 
       const downloadTemplate = () => {
-        axios.get(`${TEMPLATE}`,{
+        trackPromise(axios.get(`${TEMPLATE}`,{
             responseType: 'blob',
         })
             .then(({data}) => {
@@ -43,7 +44,7 @@ const CreateOrders = () => {
             })
             .catch((err) => {
                 return Promise.reject({ Error: 'Something Went Wrong', err });
-            })
+            }))
       }
     
       const filePathset = (e) => {
@@ -79,9 +80,13 @@ const CreateOrders = () => {
           /* Update state */
           //console.log("Data>>>" + data);// shows that excel data is read
           //console.log(convertToJson(data)); // shows data in json format
-          axios.post(CREATE_ORDER_BULK,result).then(res=>{
-              
-          })
+          trackPromise(axios.post(CREATE_ORDER_BULK,result).then(res=>{
+              setLgShow(false);
+              setToast(true);
+          },
+          e=>{
+              setFailToast(true);
+          }))
         };
         reader.readAsBinaryString(f);
       }
@@ -91,16 +96,16 @@ const CreateOrders = () => {
           setFailToast(false);
       }
       const fetchpindetails=(pin)=>{
-        axios.get(PIN_DETAILS+pin).then(res=>{
+        trackPromise(axios.get(PIN_DETAILS+pin).then(res=>{
           const customer = {};
           customer.city = res.data.city;
           customer.state = res.data.state;
           setUserData(customer);
-        })
+        }))
       }
       const fetchshippingrate=(pin,values) =>{
           if(values.customer && values.order && values.shipment_details)
-          axios.get(SHIPPING_RATE+'?source='+values.customer.address.Pin+'&destination='+pin+'&payment_type='+values.order.payment_mode+'&weight='+values.shipment_details.weight+'&productValue='+values.order.product_price,{
+          trackPromise(axios.get(SHIPPING_RATE+'?source='+values.customer.address.Pin+'&destination='+pin+'&payment_type='+values.order.payment_mode+'&weight='+values.shipment_details.weight+'&productValue='+values.order.product_price,{
               headers:{
                   'length': values.shipment_details.volumetric_weight.length,
                   'width': values.shipment_details.volumetric_weight.width,
@@ -108,15 +113,15 @@ const CreateOrders = () => {
               }
           }).then(res=>{
             setCourier(res.data.rates)
-          })
+          }))
       }
       useEffect(()=>{
-          axios.get(PRODUCT_CATEGORY).then((res)=>{
+          trackPromise(axios.get(PRODUCT_CATEGORY).then((res)=>{
             setCategory(res.data)
-          })
-          axios.get(PICKUP_ADDRESS).then(res=>{
+          }))
+          trackPromise(axios.get(PICKUP_ADDRESS).then(res=>{
               setAddressList(res.data)
-          })
+          }))
       },[])
     
     return (
@@ -142,14 +147,13 @@ const CreateOrders = () => {
                         <Formik
                             initialValues={{order:{payment_mode:'PREPAID'}}}
                             onSubmit={(values, { setSubmitting }) => {
-                                setTimeout(() => {
-                                axios.post(CREATE_ORDER, {...values, customer: {...values.customer,address:{...values.customer.address,...userData}}}).then(async (res)=>{
+                                trackPromise(axios.post(CREATE_ORDER, {...values, customer: {...values.customer,address:{...values.customer.address,...userData}}}).then(async (res)=>{
                                     setSubmitting(false);
                                     setToast(true);
                                 },err=>{
                                     setFailToast(true);
-                                })
-                                }, 400);
+                                    setSubmitting(false);
+                                }));
                             }}
                             >
                             {({

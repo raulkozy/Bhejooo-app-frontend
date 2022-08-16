@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Formik } from 'formik';
 import React, { useRef, useState, useEffect } from 'react';
 import { Toast } from "react-bootstrap";
+import { trackPromise } from 'react-promise-tracker';
 import { useLocation, useParams } from 'react-router-dom';
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
@@ -19,22 +20,22 @@ const Address = () => {
         setFailToast(false);
     }
     const fetchpindetails=(pin)=>{
-        axios.get(PIN_DETAILS+pin).then(res=>{
+        trackPromise(axios.get(PIN_DETAILS+pin).then(res=>{
           const customer = {};
           customer.city = res.data.city;
           customer.state = res.data.state;
           setUserData(customer);
-        })
+        }))
     }
     useEffect(()=>{
-        axios.get(ADDRESS_URL).then(res=>{
+        trackPromise(axios.get(ADDRESS_URL).then(res=>{
           let value = res.data.filter(e=>e.id==prams.id)[0]
           const customer = {};
           customer.city = value && value.city;
           customer.state = value && value.state;
           setUserData(customer);  
           setAddressForm(value);
-        })
+        }))
       },[])
     return (
         <>
@@ -55,22 +56,24 @@ const Address = () => {
                                         "address_lane1": values.address_lane1,
                                         "address_lane2": values.address_lane2,
                                         "landmark": values.landmark,
-                                        "Pin": values.Pin
+                                        "Pin": values.Pin,
+                                        "name": values.name,
+                                        "phoneNo": values.phoneNo,
                                     }
                                     if (values.id)
-                                        axios.put(ADDRESS_URL+'/'+values.id, {...payload,...userData}).then(async (res) => {
+                                        trackPromise(axios.put(ADDRESS_URL+'/'+values.id, {...payload,...userData}).then(async (res) => {
                                             setSubmitting(false);
                                             setToast(true);
                                         }, err => {
                                             setFailToast(true);
-                                        })
+                                        }))
                                     else
-                                        axios.post(ADDRESS_URL, {...payload,...userData}).then(async (res) => {
+                                        trackPromise(axios.post(ADDRESS_URL, {...payload,...userData}).then(async (res) => {
                                             setSubmitting(false);
                                             setToast(true);
                                         }, err => {
                                             setFailToast(true);
-                                        })
+                                        }))
                                 }}
                                 render=
                                 {({

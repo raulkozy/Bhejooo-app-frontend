@@ -1,23 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./ManageOrders.scss";
 import { Trans } from "react-i18next";
-import { Form } from "react-bootstrap";
+import { Form, Toast } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import axios from "axios";
 import * as XLSX from "xlsx";
+import { trackPromise } from "react-promise-tracker";
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const ORDER_URL = `${API_URL}/order/list`;
+export const UPDATE_ORDER = `${API_URL}/order`;
 
 const ManageOrders = () => {
   const [list, setList] = useState();
   const [status, setStatus] = useState('TO_BE_PROCESSED');
   const [checked, setChecked] = useState();
+  const [toast, setToast] = useState(false);
+  const [failtoast, setFailToast] = useState(false);
   const table = useRef();
   useEffect(() => {
-    axios.get(ORDER_URL).then(res => {
+    trackPromise(axios.get(ORDER_URL).then(res => {
       setList(res.data);
-    })
+    }))
   }, []);
   const exportToExcel = () => {
     // Acquire Data (reference to the HTML table)
@@ -27,6 +31,36 @@ const ManageOrders = () => {
 
     // Package and Release Data (`writeFile` tries to write and save an XLS file)
     XLSX.writeFile(workbook, "Report.xls");
+  };
+  const shipOrderAll = () => {
+    if(checked) {
+      trackPromise(axios.put(UPDATE_ORDER+'?move_to=PROCESSED',{order_ids: list.map(o=>o.id)}).then(res=>{
+        setToast(true);
+      },
+      e=>{
+        setFailToast(true);
+      }))
+    }
+  };
+  const shipOrder = (id) => {
+    trackPromise(axios.put(UPDATE_ORDER+'?move_to=PROCESSED',{order_ids: [id]}).then(res=>{
+        setToast(true);
+      },
+      e=>{
+        setFailToast(true);
+    }))
+  };
+  const cancelOrder = (id) => {
+    trackPromise(axios.put(UPDATE_ORDER+'?move_to=CANCELLED',{order_ids: [id]}).then(res=>{
+        setToast(true);
+      },
+      e=>{
+        setFailToast(true);
+    }))
+  };
+  const navigate = () => {
+    setToast(false);
+    setFailToast(false);
   };
   return (
     // <div className="row">
@@ -65,7 +99,7 @@ const ManageOrders = () => {
         <div className="bulk-action">
           <div className="row">
             {status == 'TO_BE_PROCESSED' && (
-                <button type="button" className="btn btn-success btn-fw" disabled={!checked}>
+                <button type="button" className="btn btn-success btn-fw" disabled={!checked} onClick={shipOrderAll}>
                   I want to ship
                 </button>)}
             {status == 'PROCESSED' && (    
@@ -100,12 +134,13 @@ const ManageOrders = () => {
                         </div>
                       </th>
                       <th> ORDER ID </th>
+                      <th style={{ width: "120px" }}> AWB </th>
                       <th style={{ width: "150px" }}> ORDER DATE & TIME </th>
                       <th> CHANNEL </th>
                       <th style={{ width: "134px" }}> PRODUCT DETAILS </th>
                       <th> PAYMENT </th>
                       <th style={{ width: "176px" }}> CUSTOMER DETAILS </th>
-                      <th style={{ width: "115px" }}> ORDER STATUS </th>
+                      <th style={{ width: "115px" }}> STATUS </th>
                       <th>ACTIONS </th>
                     </tr>
                   </thead>
@@ -131,6 +166,7 @@ const ManageOrders = () => {
                               <span>{ele.id} </span>
                             </div>
                           </td>
+                          <td>{ele.tracking_id}</td>
                           <td> {new Date(ele.created_at).toLocaleString()} </td>
                           <td> Manual </td>
                           <td>
@@ -141,7 +177,7 @@ const ManageOrders = () => {
                               </div>
                             </div>
                           </td>
-                          <td> ₹{ele.product_price * ele.product_quantity} / - cod </td>
+                          <td> ₹{ele.product_price * ele.product_quantity} / - {ele.payment_type} </td>
                           <td>
                             {ele.customer && (
                             <div className="custdetsils">
@@ -150,21 +186,21 @@ const ManageOrders = () => {
                               <a href="#">VIEW / EDIT DETAILS</a>
                             </div>)}
                           </td>
-                          <td>Approved</td>
+                          <td>{ele.status=='TO_BE_PROCESSED'?'Approved':ele.status}</td>
                           <td>
                             {status == 'TO_BE_PROCESSED' && (
                               <>
-                                <button type="button" class="btn btn-success btn-fw">
+                                <button type="button" class="btn btn-success btn-fw" onClick={()=>shipOrder(ele.id)}>
                                   I want to ship
                                 </button>
-                                <a href="#" className="cancelText">
+                                <a href="#" className="cancelText" onClick={()=>cancelOrder(ele.id)}>
                                   Cancel
                                 </a>
                               </>)}
-                            {status == 'SHIPPED' && (
+                            {status == 'PROCESSED' && (
                               <>
                                 <button type="button" class="btn btn-light btn-fw">
-                                  Ready to ship
+                                  Shipping Label
                                 </button>
                               </>
                             )}
@@ -532,6 +568,23 @@ const ManageOrders = () => {
           </div>
         </div>
       </div>
+
+      {toast && (<Toast onClose={navigate} className="toast-success">
+          <Toast.Header>
+            <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
+            <strong className="me-auto">Success</strong>
+          </Toast.Header>
+          <Toast.Body> Sucessful.</Toast.Body>
+        </Toast>
+        )}
+        {failtoast && (<Toast onClose={navigate} className="toast-danger">
+          <Toast.Header>
+            <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
+            <strong className="me-auto">Failure</strong>
+          </Toast.Header>
+          <Toast.Body> Failed.</Toast.Body>
+        </Toast>
+        )}
     </div>
   );
 };

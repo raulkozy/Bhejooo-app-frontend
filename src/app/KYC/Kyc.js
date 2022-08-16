@@ -5,6 +5,7 @@ import { Form, Toast } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import axios from 'axios';
 import { Formik } from 'formik';
+import { trackPromise } from "react-promise-tracker";
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const KYC_URL = `${API_URL}/user/kyc`;
@@ -20,12 +21,12 @@ const Kyc = () => {
     setFailToast(false);
   }
   useEffect(()=>{
-    axios.get(BANK_LIST).then(res=>{
+    trackPromise(axios.get(BANK_LIST).then(res=>{
       setbanklist(res.data);
-    })
-    axios.get(KYC_URL).then(res=>{
+    }))
+    trackPromise(axios.get(KYC_URL).then(res=>{
       setKycForm(res.data);
-    })
+    }))
   },[])
   return (
     // <div className="row">
@@ -53,19 +54,21 @@ const Kyc = () => {
                             enableReinitialize
                             onSubmit={(values, { setSubmitting }) => {
                                 if(values.id)  
-                                  axios.put(KYC_URL, values).then(async (res)=>{
+                                  trackPromise(axios.put(KYC_URL, values).then(async (res)=>{
                                       setSubmitting(false);
                                       setToast(true);
                                   },err=>{
                                       setFailToast(true);
-                                  })
+                                      setSubmitting(false);
+                                  }))
                                 else
-                                  axios.post(KYC_URL, values).then(async (res)=>{
+                                  trackPromise(axios.post(KYC_URL, values).then(async (res)=>{
                                       setSubmitting(false);
                                       setToast(true);
                                   },err=>{
                                       setFailToast(true);
-                                  })
+                                      setSubmitting(false);
+                                  }))
                             }}
                             render=
                             {({

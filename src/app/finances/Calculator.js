@@ -3,6 +3,7 @@ import { Formik } from 'formik';
 import React, { useRef, useState, useEffect } from 'react';
 import { Form, Table, Toast } from "react-bootstrap";
 import { Trans } from 'react-i18next';
+import { trackPromise } from 'react-promise-tracker';
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const SHIPPING_RATE = `${API_URL}/calculator/shiping-rate`;
@@ -34,7 +35,7 @@ const Calculator = () => {
                             <Formik
                                 initialValues={{}}
                                 onSubmit={(values, { setSubmitting }) => {
-                                    axios.get(SHIPPING_RATE + '?source=' + values.source + '&destination=' + values.destination + '&payment_type=' + values.payment_mode + '&weight=' + values.weight + '&productValue=' + values.product_price, {
+                                    trackPromise(axios.get(SHIPPING_RATE + '?source=' + values.source + '&destination=' + values.destination + '&payment_type=' + values.payment_mode + '&weight=' + values.weight + '&productValue=' + values.product_price, {
                                         headers: {
                                             'length': values.length,
                                             'width': values.width,
@@ -47,7 +48,7 @@ const Calculator = () => {
                                     }, err => {
                                         setSubmitting(false);
                                         setFailToast(true);
-                                    })
+                                    }))
                                 }}
                                 render=
                                 {({

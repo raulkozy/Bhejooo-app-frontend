@@ -34,7 +34,13 @@ const ManageOrders = () => {
   };
   const shipOrderAll = () => {
     if(checked) {
-      trackPromise(axios.put(UPDATE_ORDER+'?move_to=PROCESSED',{order_ids: list.map(o=>o.id)}).then(res=>{
+      trackPromise(axios.put(UPDATE_ORDER,{order_ids: list.map(o=>o.id)},
+      {
+        headers: {
+          move_to: 'PROCESSED'
+        }
+      }
+      ).then(res=>{
         setToast(true);
       },
       e=>{
@@ -43,7 +49,13 @@ const ManageOrders = () => {
     }
   };
   const shipOrder = (id) => {
-    trackPromise(axios.put(UPDATE_ORDER+'?move_to=PROCESSED',{order_ids: [id]}).then(res=>{
+    trackPromise(axios.put(UPDATE_ORDER,{order_ids: [id]},
+    {
+      headers: {
+        move_to: 'PROCESSED'
+      }
+    }
+    ).then(res=>{
         setToast(true);
       },
       e=>{
@@ -51,7 +63,13 @@ const ManageOrders = () => {
     }))
   };
   const cancelOrder = (id) => {
-    trackPromise(axios.put(UPDATE_ORDER+'?move_to=CANCELLED',{order_ids: [id]}).then(res=>{
+    trackPromise(axios.put(UPDATE_ORDER,{order_ids: [id]},
+    {
+      headers:{
+        move_to: 'CANCELLED'
+      }
+    }
+    ).then(res=>{
         setToast(true);
       },
       e=>{
@@ -193,15 +211,15 @@ const ManageOrders = () => {
                                 <button type="button" class="btn btn-success btn-fw" onClick={()=>shipOrder(ele.id)}>
                                   I want to ship
                                 </button>
-                                <a href="#" className="cancelText" onClick={()=>cancelOrder(ele.id)}>
-                                  Cancel
-                                </a>
                               </>)}
                             {status == 'PROCESSED' && (
                               <>
                                 <button type="button" class="btn btn-light btn-fw">
                                   Shipping Label
                                 </button>
+                                <a href="#" className="cancelText" onClick={()=>cancelOrder(ele.id)}>
+                                  Cancel
+                                </a>
                               </>
                             )}
                           </td>

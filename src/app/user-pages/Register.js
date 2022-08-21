@@ -325,7 +325,7 @@ const Register = () => {
                         setSubmitting(false);
                         if(res.data)
                           sessionStorage.setItem('access_token', res.data.access_token)
-                          history.push('/dashboard');
+                          history.push('/kyc');
                           //else return Promise.reject(res)
                         })
                     }, 400);

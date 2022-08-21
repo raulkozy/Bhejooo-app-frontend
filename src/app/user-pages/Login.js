@@ -49,7 +49,7 @@ const Login = () => {
                         if(res.data)
                           sessionStorage.setItem('access_token', res.data.access_token)
                           sessionStorage.setItem('username',res.data.user)
-                          history.push('/dashboard')
+                          history.push('/orders/ManageOrders')
                           //else return Promise.reject(res)
                         },err=>{
                           let errors = {};

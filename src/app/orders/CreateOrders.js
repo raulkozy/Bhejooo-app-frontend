@@ -73,9 +73,16 @@ const CreateOrders = () => {
           var result = {};
           wb.SheetNames.forEach(function(sheetName) {
 			var roa = XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
-			if(roa.length > 0){
+			if(roa.length > 0 && roa.length<200){
 				result = roa;
 			}
+            else if(roa.length>=200){
+                result = roa.slice(0,199);
+                for(let i=1;i<=roa.length%200;i++){
+                    axios.post(CREATE_ORDER_BULK,roa.slice(200*i,200*i+199)).then(res=>{
+                    })
+                }
+            }
           });
           /* Update state */
           //console.log("Data>>>" + data);// shows that excel data is read

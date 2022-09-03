@@ -197,7 +197,7 @@ const Address = () => {
                                                     className="form-control"
                                                     name="name"
                                                     onChange={handleChange}
-                                                    defaultValue={userData && userData.name}
+                                                    defaultValue={values && values.name}
                                                 />
                                             </div>
                                         </div>
@@ -214,7 +214,7 @@ const Address = () => {
                                                     className="form-control"
                                                     name="phoneNo"
                                                     onChange={handleChange}
-                                                    defaultValue={userData && userData.phoneNo}
+                                                    defaultValue={values && values.phone_no}
                                                 />
                                             </div>
                                         </div>

@@ -73,7 +73,7 @@ class Sidebar extends Component {
                 </div>
                 <div className="profile-name">
                   <h5 className="mb-0 font-weight-normal">{sessionStorage.getItem('username')}</h5>
-                  <span><Trans>Gold Member</Trans></span>
+                  <span><Trans>{sessionStorage.getItem('membership')} Member</Trans></span>
                 </div>
               </div>
               <Dropdown alignRight>
@@ -238,8 +238,8 @@ class Sidebar extends Component {
                   <li className="nav-item"> <Link className={this.isPathActive('/tools/priority') ? 'nav-link active' : 'nav-link'} to='/tools/priority'><Trans>Courier Partner Priority</Trans></Link></li>
                   <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/dropdowns') ? 'nav-link active' : 'nav-link'} ><Trans>Shipping Label Customization</Trans></Link></li>
                   <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Servicable Pincode List</Trans></Link></li>
-                  <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Report</Trans></Link></li>
-                  <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Notifications</Trans></Link></li>
+                  {/* <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Report</Trans></Link></li>
+                  <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Notifications</Trans></Link></li> */}
                 </ul>
               </div>
             </Collapse>
@@ -255,8 +255,8 @@ class Sidebar extends Component {
             <Collapse in={this.state.settings}>
               <div>
                 <ul className="nav flex-column sub-menu">
-                  <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/buttons') ? 'nav-link active' : 'nav-link'} ><Trans>API Integration</Trans></Link></li>
-                  <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/dropdowns') ? 'nav-link active' : 'nav-link'} ><Trans>User Role Management</Trans></Link></li>
+                  {/* <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/buttons') ? 'nav-link active' : 'nav-link'} ><Trans>API Integration</Trans></Link></li>
+                  <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/dropdowns') ? 'nav-link active' : 'nav-link'} ><Trans>User Role Management</Trans></Link></li> */}
                   <li className="nav-item"> <Link className={this.isPathActive('/settings/channel') ? 'nav-link active' : 'nav-link'} to='/settings/channel'><Trans>Channel Integration</Trans></Link></li>
                 </ul>
               </div>
@@ -347,9 +347,9 @@ class Sidebar extends Component {
               </div>
             </Collapse>
           </li> */}
-          <li className="nav-item nav-category">
+          {/* <li className="nav-item nav-category">
             <span className="nav-link"><Trans>More</Trans></span>
-          </li>
+          </li> */}
           {/* <li className={this.isPathActive('/error-pages') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
             <div className={this.state.errorPagesMenuOpen ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('errorPagesMenuOpen')} data-toggle="collapse">
               <span className="menu-icon">
@@ -367,14 +367,14 @@ class Sidebar extends Component {
               </div>
             </Collapse>
           </li> */}
-          <li className="nav-item menu-items">
+          {/* <li className="nav-item menu-items">
             <a className="nav-link" href="http://bootstrapdash.com/demo/corona-react-free/documentation/documentation.html" rel="noopener noreferrer" target="_blank">
               <span className="menu-icon">
                 <i className="mdi mdi-file-document-box"></i>
               </span>
               <span className="menu-title"><Trans>Documentation</Trans></span>
             </a>
-          </li>
+          </li> */}
         </ul>
       </nav>
     );

@@ -29,10 +29,16 @@ const Channel = () => {
                                 initialValues={{}}
                                 enableReinitialize
                                 onSubmit={(values, { setSubmitting }) => {
-                                        trackPromise(axios.post(CHANNEL_INTEGRATION+'?=provider=SHOPIFY', values).then(async (res) => {
+                                        trackPromise(axios.post(CHANNEL_INTEGRATION, values,{
+                                            headers:{
+                                                provider: 'SHOPIFY'
+                                            }
+                                        }).then(async (res) => {
                                             setSubmitting(false);
                                             setToast(true);
-                                            trackPromise(axios.get(CHANNEL_FETCHORDERS+'?provider=SHOPIFY').then(res=>{
+                                            trackPromise(axios.get(CHANNEL_FETCHORDERS,{
+                                                provider: 'SHOPIFY'
+                                            }).then(res=>{
                                                 setToast(true);
                                             },
                                             err=>{

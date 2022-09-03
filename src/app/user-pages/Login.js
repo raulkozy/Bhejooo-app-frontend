@@ -49,6 +49,7 @@ const Login = () => {
                         if(res.data)
                           sessionStorage.setItem('access_token', res.data.access_token)
                           sessionStorage.setItem('username',res.data.user)
+                          sessionStorage.setItem('membership',res.data.membership)
                           history.push('/orders/manage-order')
                           //else return Promise.reject(res)
                         },err=>{

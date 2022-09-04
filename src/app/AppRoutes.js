@@ -9,6 +9,7 @@ const ManageOrders = lazy(() => import('./orders/ManageOrders'));
 const Address = lazy(() => import('./orders/Address'));
 const KYC = lazy(() => import('./KYC/Kyc'));
 const Calculator = lazy(() => import('./finances/Calculator'));
+const TransactionsSummary = lazy(() => import('./finances/TransactionsSummary'));
 const Priorirty = lazy(()=> import('./tools/Priority')); 
 const Channel = lazy(()=> import('./settings/Channel'));
 
@@ -43,6 +44,7 @@ class AppRoutes extends Component {
           <Route exact path="/address/:id" component={Address} />
           <Route exact path="/kyc" component={KYC} />
           <Route exact path="/finances/calculator" component={Calculator} />
+          <Route exact path="/finances/transactions-summary" component={TransactionsSummary} />
           <Route exact path="/tools/priority" component={Priorirty} />
           <Route exact path="/settings/channel" component={Channel} />
           <Route path="/basic-ui/buttons" component={Buttons} />

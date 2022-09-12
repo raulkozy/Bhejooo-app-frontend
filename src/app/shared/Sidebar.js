@@ -236,7 +236,7 @@ class Sidebar extends Component {
               <div>
                 <ul className="nav flex-column sub-menu">
                   <li className="nav-item"> <Link className={this.isPathActive('/tools/priority') ? 'nav-link active' : 'nav-link'} to='/tools/priority'><Trans>Courier Partner Priority</Trans></Link></li>
-                  <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/dropdowns') ? 'nav-link active' : 'nav-link'} ><Trans>Shipping Label Customization</Trans></Link></li>
+                  <li className="nav-item"> <Link className={this.isPathActive('/tools/customize') ? 'nav-link active' : 'nav-link'} to='/tools/customize'><Trans>Shipping Label Customization</Trans></Link></li>
                   <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Servicable Pincode List</Trans></Link></li>
                   {/* <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Report</Trans></Link></li>
                   <li className="nav-item"> <Link className={this.isPathActive('/basic-ui/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Notifications</Trans></Link></li> */}

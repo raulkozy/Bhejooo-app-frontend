@@ -78,7 +78,12 @@ const ManageOrders = () => {
     }))
   };
   const downloadLabel = (id) => {
-    trackPromise(axios.post(SHIPPING_LABEL, {order_ids: [id]}).then(res=>{
+    trackPromise(axios.post(SHIPPING_LABEL, {order_ids: [id]}, { responseType: 'blob' }).then(res=>{
+      var blob=new Blob([res.data], {type: "application/pdf"});
+      var link=document.createElement('a');
+      link.href=window.URL.createObjectURL(blob);
+      link.download="Shipping_label.pdf";
+      link.click();
       setToast(true);
     },
     e=>{
@@ -86,7 +91,12 @@ const ManageOrders = () => {
     }))
   }
   const downloadLabelAll = () => {
-    trackPromise(axios.post(SHIPPING_LABEL, {order_ids: list.map(o=>o.id)}).then(res=>{
+    trackPromise(axios.post(SHIPPING_LABEL, {order_ids: list.map(o=>o.id)}, { responseType: 'blob' }).then(res=>{
+      var blob=new Blob([res.data], {type: "application/pdf"});
+      var link=document.createElement('a');
+      link.href=window.URL.createObjectURL(blob);
+      link.download="Shipping_label.pdf";
+      link.click();
       setToast(true);
     },
     e=>{

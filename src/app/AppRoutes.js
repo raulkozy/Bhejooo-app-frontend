@@ -46,6 +46,7 @@ class AppRoutes extends Component {
           <Route exact path="/finances/calculator" component={Calculator} />
           <Route exact path="/finances/transactions-summary" component={TransactionsSummary} />
           <Route exact path="/tools/priority" component={Priorirty} />
+          <Route exact path="/tools/customize" component={Customize} />
           <Route exact path="/settings/channel" component={Channel} />
           <Route path="/basic-ui/buttons" component={Buttons} />
           <Route path="/basic-ui/dropdowns" component={Dropdowns} />

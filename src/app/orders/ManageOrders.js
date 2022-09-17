@@ -10,6 +10,7 @@ import { trackPromise } from "react-promise-tracker";
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const ORDER_URL = `${API_URL}/order/list`;
 export const UPDATE_ORDER = `${API_URL}/order`;
+export const SHIPPING_LABEL = `${API_URL}/document/shipping_label`;
 
 const ManageOrders = () => {
   const [list, setList] = useState();
@@ -76,6 +77,32 @@ const ManageOrders = () => {
         setFailToast(true);
     }))
   };
+  const downloadLabel = (id) => {
+    trackPromise(axios.post(SHIPPING_LABEL, {order_ids: [id]}, { responseType: 'blob' }).then(res=>{
+      var blob=new Blob([res.data], {type: "application/pdf"});
+      var link=document.createElement('a');
+      link.href=window.URL.createObjectURL(blob);
+      link.download="Shipping_label.pdf";
+      link.click();
+      setToast(true);
+    },
+    e=>{
+      setFailToast(true);
+    }))
+  }
+  const downloadLabelAll = () => {
+    trackPromise(axios.post(SHIPPING_LABEL, {order_ids: list.map(o=>o.id)}, { responseType: 'blob' }).then(res=>{
+      var blob=new Blob([res.data], {type: "application/pdf"});
+      var link=document.createElement('a');
+      link.href=window.URL.createObjectURL(blob);
+      link.download="Shipping_label.pdf";
+      link.click();
+      setToast(true);
+    },
+    e=>{
+      setFailToast(true);
+    }))
+  }
   const navigate = () => {
     setToast(false);
     setFailToast(false);
@@ -120,10 +147,15 @@ const ManageOrders = () => {
                 <button type="button" className="btn btn-success btn-fw" disabled={!checked} onClick={shipOrderAll}>
                   I want to ship
                 </button>)}
-            {status == 'PROCESSED' && (    
+            {status == 'PROCESSED' && (
+              <>  
                 <button type="button" className="btn btn-danger btn-fw" style={{ marginLeft: '16px', height: '30px' }} disabled={!checked}>
                   Cancel
-                </button>)}
+                </button>
+                <button type="button" className="btn btn-light btn-fw" style={{ marginLeft: '16px', height: '30px' }} disabled={!checked} onClick={downloadLabelAll}>
+                  Shipping Label
+                </button>
+              </>)}
             <button type="button" className="btn btn-info btn-fw" style={{ marginLeft: '16px', height: '30px' }} onClick={exportToExcel}>
               Export to Excel
             </button>
@@ -214,7 +246,7 @@ const ManageOrders = () => {
                               </>)}
                             {status == 'PROCESSED' && (
                               <>
-                                <button type="button" class="btn btn-light btn-fw">
+                                <button type="button" class="btn btn-light btn-fw" onClick={()=>downloadLabel(ele.id)}>
                                   Shipping Label
                                 </button>
                                 <a href="#" className="cancelText" onClick={()=>cancelOrder(ele.id)}>

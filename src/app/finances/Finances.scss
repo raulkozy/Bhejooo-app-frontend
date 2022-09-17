@@ -1,4 +1,7 @@
 .transaction-summary {
+    .topBar {
+        margin-bottom: 22px;
+    }
     .summary-table {
         .columns {
             display: flex;
@@ -23,7 +26,7 @@
             }
 
             .flex-2 {
-                flex: 2;
+                flex: 2.5;
             }
         }
     }

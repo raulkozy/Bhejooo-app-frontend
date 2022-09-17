@@ -40,22 +40,26 @@ const TransactionsSummary = () => {
                         <div className="table-responsive">
                             <div className="columns">
                                 <div className="flex-2 table-item head-item">ORDER ID</div>
-                                <div className="flex-1 table-item head-item">TYPE</div>
-                                <div className="flex-2 table-item head-item">CATEGORY</div>
-                                <div className="flex-1 table-item head-item">AMOUNT</div>
-                                <div className="flex-1 table-item head-item">AFFECTED</div>
-                                <div className="flex-2 table-item head-item">CREATED AT</div>
-                                <div className="flex-1 table-item head-item">REMARKS</div>
+                                <div className="flex-1 table-item head-item">PAYMENT MODE</div>
+                                <div className="flex-2 table-item head-item">TRACKING ID</div>
+                                <div className="flex-1 table-item head-item">WALLET TYPE</div>
+                                <div className="flex-1 table-item head-item">SHIPPING CHARGES</div>
+                                <div className="flex-2 table-item head-item">DATE</div>
+                                <div className="flex-2 table-item head-item">ORDER DESCRIPTION</div>
+                                <div className="flex-1 table-item head-item">ORDER REMARKS</div>
+                                <div className="flex-2 table-item head-item">TRANSACTION TYPE</div>
                             </div>
                             {transactionData.map(data => (
                                 <div className="columns">
-                                    <div className="flex-2 table-item">{data.order}</div>
-                                    <div className="flex-1 table-item">{data.type}</div>
-                                    <div className="flex-2 table-item">{data.category}</div>
+                                    <div className="flex-2 table-item">{data.order.id}</div>
+                                    <div className="flex-1 table-item">{data.order.payment_mode}</div>
+                                    <div className="flex-2 table-item">{data.order.tracking_id}</div>
+                                    <div className="flex-1 table-item">{data.affected_balance}</div>
                                     <div className="flex-1 table-item">{data.amount}</div>
-                                    <div className="flex-1 table-item">{data.affected}</div>
                                     <div className="flex-2 table-item">{new Date(data.created_at).toLocaleString()}</div>
+                                    <div className="flex-2 table-item">{data.description}</div>
                                     <div className="flex-1 table-item">{data.remarks}</div>
+                                    <div className="flex-2 table-item">{data.transaction_type}</div>
                                 </div>
                             ))}
                         </div>

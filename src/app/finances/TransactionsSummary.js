@@ -41,7 +41,7 @@ const TransactionsSummary = () => {
                             <div className="columns">
                                 <div className="flex-2 table-item head-item">ORDER ID</div>
                                 <div className="flex-1 table-item head-item">PAYMENT MODE</div>
-                                <div className="flex-2 table-item head-item">TRACKING ID</div>
+                                <div className="flex-2 table-item head-item">AWB</div>
                                 <div className="flex-1 table-item head-item">WALLET TYPE</div>
                                 <div className="flex-1 table-item head-item">SHIPPING CHARGES</div>
                                 <div className="flex-2 table-item head-item">DATE</div>

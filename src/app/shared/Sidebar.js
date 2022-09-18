@@ -216,9 +216,10 @@ class Sidebar extends Component {
                 <ul className="nav flex-column sub-menu">
                   <li className="nav-item"> <Link className={this.isPathActive('/finances/buttons') ? 'nav-link active' : 'nav-link'} ><Trans>Shipping Charges</Trans></Link></li>
                   <li className="nav-item"> <Link className={this.isPathActive('/finances/calculator') ? 'nav-link active' : 'nav-link'} to="/finances/calculator"><Trans>Shipping Rate Calculator</Trans></Link></li>
-                  <li className="nav-item"> <Link className={this.isPathActive('/finances/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Credit History</Trans></Link></li>
+                  <li className="nav-item"> <Link className={this.isPathActive('/finances/transactions-summary') ? 'nav-link active' : 'nav-link'} to="/finances/transactions-summary"><Trans>Transactions Summary</Trans></Link></li>
+                  {/* <li className="nav-item"> <Link className={this.isPathActive('/finances/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Credit History</Trans></Link></li>
                   <li className="nav-item"> <Link className={this.isPathActive('/finances/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Payment History</Trans></Link></li>
-                  <li className="nav-item"> <Link className={this.isPathActive('/finances/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Wallet Recharge History</Trans></Link></li>
+                  <li className="nav-item"> <Link className={this.isPathActive('/finances/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Wallet Recharge History</Trans></Link></li> */}
                   <li className="nav-item"> <Link className={this.isPathActive('/finances/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Invoice</Trans></Link></li>
                 </ul>
               </div>

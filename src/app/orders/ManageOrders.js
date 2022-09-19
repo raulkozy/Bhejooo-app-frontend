@@ -219,7 +219,7 @@ const ManageOrders = () => {
                                 <input
                                   type="checkbox"
                                   className="form-check-input"
-                                  defaultChecked={checked}
+                                  checked={checked}
                                   onChange={(e)=>{if(e.target.checked)setSelectedList(old=>[...old, ele.id])
                                     else setSelectedList(old=>old.filter(o=>o!==ele.id))}}
                                 />

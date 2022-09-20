@@ -264,7 +264,7 @@ const Kyc = () => {
           </div>
         </div>
       </div>
-        {toast && (<Toast onClose={navigate} className="toast-success">
+        {toast && (<Toast onClose={navigate} className="toast-success" autohide={true}>
           <Toast.Header>
             <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
             <strong className="me-auto">Success</strong>
@@ -272,7 +272,7 @@ const Kyc = () => {
           <Toast.Body>Processed Sucessfully.</Toast.Body>
         </Toast>
         )}
-        {failtoast && (<Toast onClose={navigate} className="toast-danger">
+        {failtoast && (<Toast onClose={navigate} className="toast-danger" autohide={true}>
           <Toast.Header>
             <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
             <strong className="me-auto">Failure</strong>

@@ -14,6 +14,7 @@ export const SHIPPING_LABEL = `${API_URL}/document/shipping_label`;
 
 const ManageOrders = () => {
   const [list, setList] = useState();
+  const [selectedList, setSelectedList] = useState([]);
   const [status, setStatus] = useState('TO_BE_PROCESSED');
   const [checked, setChecked] = useState();
   const [toast, setToast] = useState(false);
@@ -34,8 +35,7 @@ const ManageOrders = () => {
     XLSX.writeFile(workbook, "Report.xls");
   };
   const shipOrderAll = () => {
-    if(checked) {
-      trackPromise(axios.put(UPDATE_ORDER,{order_ids: list.map(o=>o.id)},
+      trackPromise(axios.put(UPDATE_ORDER,{order_ids: selectedList},
       {
         headers: {
           move_to: 'PROCESSED'
@@ -47,7 +47,6 @@ const ManageOrders = () => {
       e=>{
         setFailToast(true);
       }))
-    }
   };
   const shipOrder = (id) => {
     trackPromise(axios.put(UPDATE_ORDER,{order_ids: [id]},
@@ -77,6 +76,20 @@ const ManageOrders = () => {
         setFailToast(true);
     }))
   };
+  const cancelOrderAll = () => {
+    trackPromise(axios.put(UPDATE_ORDER,{order_ids: selectedList},
+    {
+      headers:{
+        move_to: 'CANCELLED'
+      }
+    }
+    ).then(res=>{
+        setToast(true);
+      },
+      e=>{
+        setFailToast(true);
+    }))
+  };
   const downloadLabel = (id) => {
     trackPromise(axios.post(SHIPPING_LABEL, {order_ids: [id]}, { responseType: 'blob' }).then(res=>{
       var blob=new Blob([res.data], {type: "application/pdf"});
@@ -91,7 +104,7 @@ const ManageOrders = () => {
     }))
   }
   const downloadLabelAll = () => {
-    trackPromise(axios.post(SHIPPING_LABEL, {order_ids: list.map(o=>o.id)}, { responseType: 'blob' }).then(res=>{
+    trackPromise(axios.post(SHIPPING_LABEL, {order_ids: selectedList}, { responseType: 'blob' }).then(res=>{
       var blob=new Blob([res.data], {type: "application/pdf"});
       var link=document.createElement('a');
       link.href=window.URL.createObjectURL(blob);
@@ -144,15 +157,15 @@ const ManageOrders = () => {
         <div className="bulk-action">
           <div className="row">
             {status == 'TO_BE_PROCESSED' && (
-                <button type="button" className="btn btn-success btn-fw" disabled={!checked} onClick={shipOrderAll}>
+                <button type="button" className="btn btn-success btn-fw" disabled={selectedList.length<2} onClick={shipOrderAll}>
                   I want to ship
                 </button>)}
             {status == 'PROCESSED' && (
               <>  
-                <button type="button" className="btn btn-danger btn-fw" style={{ marginLeft: '16px', height: '30px' }} disabled={!checked}>
+                <button type="button" className="btn btn-danger btn-fw" style={{ marginLeft: '16px', height: '30px' }} disabled={selectedList.length<2} onClick={cancelOrderAll}>
                   Cancel
                 </button>
-                <button type="button" className="btn btn-light btn-fw" style={{ marginLeft: '16px', height: '30px' }} disabled={!checked} onClick={downloadLabelAll}>
+                <button type="button" className="btn btn-light btn-fw" style={{ marginLeft: '16px', height: '30px' }} disabled={selectedList.length<2} onClick={downloadLabelAll}>
                   Shipping Label
                 </button>
               </>)}
@@ -177,7 +190,8 @@ const ManageOrders = () => {
                             <input
                               type="checkbox"
                               className="form-check-input"
-                              onChange={(e)=>setChecked(e.target.checked)}
+                              onChange={(e)=>{setChecked(e.target.checked);if(e.target.checked)setSelectedList(list.map(o=>o.id))
+                                else setSelectedList([])}}
                             />
                             <i className="input-helper"> </i>
                           </label>
@@ -206,6 +220,8 @@ const ManageOrders = () => {
                                   type="checkbox"
                                   className="form-check-input"
                                   checked={checked}
+                                  onChange={(e)=>{if(e.target.checked)setSelectedList(old=>[...old, ele.id])
+                                    else setSelectedList(old=>old.filter(o=>o!==ele.id))}}
                                 />
                                 <i className="input-helper"> </i>
                               </label>

@@ -13,6 +13,7 @@ export const UPDATE_ORDER = `${API_URL}/order`;
 export const SHIPPING_LABEL = `${API_URL}/document/shipping_label`;
 
 const ManageOrders = () => {
+  const [total, setTotal] = useState(10);
   const [list, setList] = useState();
   const [selectedList, setSelectedList] = useState([]);
   const [status, setStatus] = useState('TO_BE_PROCESSED');
@@ -21,7 +22,7 @@ const ManageOrders = () => {
   const [failtoast, setFailToast] = useState(false);
   const table = useRef();
   useEffect(() => {
-    trackPromise(axios.get(ORDER_URL).then(res => {
+    trackPromise(axios.get(ORDER_URL+'?total='+total).then(res => {
       setList(res.data);
     }))
   }, []);
@@ -120,6 +121,12 @@ const ManageOrders = () => {
     setToast(false);
     setFailToast(false);
   };
+  const loadMore = () => {
+    trackPromise(axios.get(ORDER_URL+'?total='+parseInt(total+10)).then(res => {
+      setList(res.data);
+      setTotal(total+10);
+    }))
+  }
   return (
     // <div className="row">
     //     <div className="col-12 grid-margin">
@@ -273,344 +280,19 @@ const ManageOrders = () => {
                           </td>
                         </tr>
                       ))}
-
-                    {/* <tr>
-                      <td>
-                        <div className="form-check form-check-muted m-0">
-                          <label className="form-check-label">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                            />
-                            <i className="input-helper"> </i>
-                          </label>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="d-flex">
-                          <span>4368241729 </span>
-                        </div>
-                      </td>
-                      <td> 28 Apr 2022, 07: 12 pm </td>
-                      <td> Manual </td>
-                      <td>
-                        <div className="proddetailsMain">
-                          <div className="proddetails">
-                            <span>ecsdcs</span>
-                            <b>QTY: 1</b>
-                          </div>
-                          <img src="/static/media/lockscreen-bg.0d7ef366.jpg" />
-                        </div>
-                      </td>
-                      <td> ₹122 / - cod </td>
-                      <td>
-                        <div className="custdetsils">
-                          <p>Johanna Barreto</p>
-                          <p>Ph: 9158126836</p>
-                          <a href="#">VIEW / EDIT DETAILS</a>
-                        </div>
-                      </td>
-                      <td>Approved</td>
-                      <td>
-                        <button type="button" class="btn btn-success btn-fw">
-                          I want to ship
-                        </button>
-                        <a href="#" className="cancelText">
-                          Cancel
-                        </a>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div className="form-check form-check-muted m-0">
-                          <label className="form-check-label">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                            />
-                            <i className="input-helper"> </i>
-                          </label>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="d-flex">
-                          <span>4368241729 </span>
-                        </div>
-                      </td>
-                      <td> 28 Apr 2022, 07: 12 pm </td>
-                      <td> Manual </td>
-                      <td>
-                        <div className="proddetailsMain">
-                          <div className="proddetails">
-                            <span>ecsdcs</span>
-                            <b>QTY: 1</b>
-                          </div>
-                          <img src="/static/media/lockscreen-bg.0d7ef366.jpg" />
-                        </div>
-                      </td>
-                      <td> ₹122 / - cod </td>
-                      <td>
-                        <div className="custdetsils">
-                          <p>Johanna Barreto</p>
-                          <p>Ph: 9158126836</p>
-                          <a href="#">VIEW / EDIT DETAILS</a>
-                        </div>
-                      </td>
-                      <td>Approved</td>
-                      <td>
-                        <button type="button" class="btn btn-success btn-fw">
-                          I want to ship
-                        </button>
-                        <a href="#" className="cancelText">
-                          Cancel
-                        </a>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div className="form-check form-check-muted m-0">
-                          <label className="form-check-label">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                            />
-                            <i className="input-helper"> </i>
-                          </label>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="d-flex">
-                          <span>4368241729 </span>
-                        </div>
-                      </td>
-                      <td> 28 Apr 2022, 07: 12 pm </td>
-                      <td> Manual </td>
-                      <td>
-                        <div className="proddetailsMain">
-                          <div className="proddetails">
-                            <span>ecsdcs</span>
-                            <b>QTY: 1</b>
-                          </div>
-                          <img src="/static/media/lockscreen-bg.0d7ef366.jpg" />
-                        </div>
-                      </td>
-                      <td> ₹122 / - cod </td>
-                      <td>
-                        <div className="custdetsils">
-                          <p>Johanna Barreto</p>
-                          <p>Ph: 9158126836</p>
-                          <a href="#">VIEW / EDIT DETAILS</a>
-                        </div>
-                      </td>
-                      <td>Approved</td>
-                      <td>
-                        <button type="button" class="btn btn-success btn-fw">
-                          I want to ship
-                        </button>
-                        <a href="#" className="cancelText">
-                          Cancel
-                        </a>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div className="form-check form-check-muted m-0">
-                          <label className="form-check-label">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                            />
-                            <i className="input-helper"> </i>
-                          </label>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="d-flex">
-                          <span>4368241729 </span>
-                        </div>
-                      </td>
-                      <td> 28 Apr 2022, 07: 12 pm </td>
-                      <td> Manual </td>
-                      <td>
-                        <div className="proddetailsMain">
-                          <div className="proddetails">
-                            <span>ecsdcs</span>
-                            <b>QTY: 1</b>
-                          </div>
-                          <img src="/static/media/lockscreen-bg.0d7ef366.jpg" />
-                        </div>
-                      </td>
-                      <td> ₹122 / - cod </td>
-                      <td>
-                        <div className="custdetsils">
-                          <p>Johanna Barreto</p>
-                          <p>Ph: 9158126836</p>
-                          <a href="#">VIEW / EDIT DETAILS</a>
-                        </div>
-                      </td>
-                      <td>Approved</td>
-                      <td>
-                        <button type="button" class="btn btn-success btn-fw">
-                          I want to ship
-                        </button>
-                        <a href="#" className="cancelText">
-                          Cancel
-                        </a>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div className="form-check form-check-muted m-0">
-                          <label className="form-check-label">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                            />
-                            <i className="input-helper"> </i>
-                          </label>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="d-flex">
-                          <span>4368241729 </span>
-                        </div>
-                      </td>
-                      <td> 28 Apr 2022, 07: 12 pm </td>
-                      <td> Manual </td>
-                      <td>
-                        <div className="proddetailsMain">
-                          <div className="proddetails">
-                            <span>ecsdcs</span>
-                            <b>QTY: 1</b>
-                          </div>
-                          <img src="/static/media/lockscreen-bg.0d7ef366.jpg" />
-                        </div>
-                      </td>
-                      <td> ₹122 / - cod </td>
-                      <td>
-                        <div className="custdetsils">
-                          <p>Johanna Barreto</p>
-                          <p>Ph: 9158126836</p>
-                          <a href="#">VIEW / EDIT DETAILS</a>
-                        </div>
-                      </td>
-                      <td>Approved</td>
-                      <td>
-                        <button type="button" class="btn btn-success btn-fw">
-                          I want to ship
-                        </button>
-                        <a href="#" className="cancelText">
-                          Cancel
-                        </a>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div className="form-check form-check-muted m-0">
-                          <label className="form-check-label">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                            />
-                            <i className="input-helper"> </i>
-                          </label>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="d-flex">
-                          <span>4368241729 </span>
-                        </div>
-                      </td>
-                      <td> 28 Apr 2022, 07: 12 pm </td>
-                      <td> Manual </td>
-                      <td>
-                        <div className="proddetailsMain">
-                          <div className="proddetails">
-                            <span>ecsdcs</span>
-                            <b>QTY: 1</b>
-                          </div>
-                          <img src="/static/media/lockscreen-bg.0d7ef366.jpg" />
-                        </div>
-                      </td>
-                      <td> ₹122 / - cod </td>
-                      <td>
-                        <div className="custdetsils">
-                          <p>Johanna Barreto</p>
-                          <p>Ph: 9158126836</p>
-                          <a href="#">VIEW / EDIT DETAILS</a>
-                        </div>
-                      </td>
-                      <td>Approved</td>
-                      <td>
-                        <button type="button" class="btn btn-success btn-fw">
-                          I want to ship
-                        </button>
-                        <a href="#" className="cancelText">
-                          Cancel
-                        </a>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div className="form-check form-check-muted m-0">
-                          <label className="form-check-label">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                            />
-                            <i className="input-helper"> </i>
-                          </label>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="d-flex">
-                          <span>4368241729 </span>
-                        </div>
-                      </td>
-                      <td> 28 Apr 2022, 07: 12 pm </td>
-                      <td> Manual </td>
-                      <td>
-                        <div className="proddetailsMain">
-                          <div className="proddetails">
-                            <span>ecsdcs</span>
-                            <b>QTY: 1</b>
-                          </div>
-                          <img src="/static/media/lockscreen-bg.0d7ef366.jpg" />
-                        </div>
-                      </td>
-                      <td> ₹122 / - cod </td>
-                      <td>
-                        <div className="custdetsils">
-                          <p>Johanna Barreto</p>
-                          <p>Ph: 9158126836</p>
-                          <a href="#">VIEW / EDIT DETAILS</a>
-                        </div>
-                      </td>
-                      <td>Approved</td>
-                      <td>
-                        <button type="button" class="btn btn-success btn-fw">
-                          I want to ship
-                        </button>
-                        <a href="#" className="cancelText">
-                          Cancel
-                        </a>
-                      </td>
-                    </tr> */}
+                    
                   </tbody>
                 </table>
+              </div>
+              <div className="col-md-6 offset-md-5" onClick={loadMore}>
+                <button className="btn btn-primary">Load More</button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="row">
+      {/* <div className="row">
         <div className="col-12">
           <div className="pagination-wrap">
             <div className="showTables">
@@ -633,9 +315,9 @@ const ManageOrders = () => {
             </Pagination>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      {toast && (<Toast onClose={navigate} className="toast-success">
+      {toast && (<Toast onClose={navigate} className="toast-success" autohide={true}>
           <Toast.Header>
             <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
             <strong className="me-auto">Success</strong>
@@ -643,7 +325,7 @@ const ManageOrders = () => {
           <Toast.Body> Sucessful.</Toast.Body>
         </Toast>
         )}
-        {failtoast && (<Toast onClose={navigate} className="toast-danger">
+        {failtoast && (<Toast onClose={navigate} className="toast-danger" autohide={true}>
           <Toast.Header>
             <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
             <strong className="me-auto">Failure</strong>

@@ -10,6 +10,7 @@ const Address = lazy(() => import('./orders/Address'));
 const KYC = lazy(() => import('./KYC/Kyc'));
 const Calculator = lazy(() => import('./finances/Calculator'));
 const TransactionsSummary = lazy(() => import('./finances/TransactionsSummary'));
+const Customize = lazy(()=> import('./tools/Customize')); 
 const Priorirty = lazy(()=> import('./tools/Priority')); 
 const Channel = lazy(()=> import('./settings/Channel'));
 

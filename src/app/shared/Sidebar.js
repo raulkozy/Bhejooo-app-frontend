@@ -36,6 +36,7 @@ class Sidebar extends Component {
       { path: '/apps', state: 'appsMenuOpen' },
       { path: '/orders', state: 'orderMenuOpen'},
       { path: '/kyc', state: 'kycMenuOpen'},
+      { path: '/weight-discrepancy', state: 'weightDiscrepancy'},
       { path: '/finances', state: 'pricing'},
       { path: '/tools', state: 'tools'},
       { path: '/settings', state: 'settings'},
@@ -186,14 +187,14 @@ class Sidebar extends Component {
               </div>
             </Collapse>
           </li>
-          <li className={this.isPathActive('/form-elements') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
-            <div className={this.state.weightDiscrepancy ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('weightDiscrepancy')} data-toggle="collapse">
+          <li className={this.isPathActive('/weight-discrepancy') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
+            <Link className="nav-link" to="/weight-discrepancy">
               <span className="menu-icon">
                 <i className="mdi mdi-weight"></i>
               </span>
               <span className="menu-title"><Trans>Weight Discrepancy</Trans></span>
               {/* <i className="menu-arrow"></i> */}
-            </div>
+              </Link>
           </li>
           {/* <li className={this.isPathActive('/form-elements') ? 'nav-item menu-items active' : 'nav-item menu-items'}>
             <div className={this.state.productCategory ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('productCategory')} data-toggle="collapse">
@@ -216,9 +217,10 @@ class Sidebar extends Component {
                 <ul className="nav flex-column sub-menu">
                   <li className="nav-item"> <Link className={this.isPathActive('/finances/buttons') ? 'nav-link active' : 'nav-link'} ><Trans>Shipping Charges</Trans></Link></li>
                   <li className="nav-item"> <Link className={this.isPathActive('/finances/calculator') ? 'nav-link active' : 'nav-link'} to="/finances/calculator"><Trans>Shipping Rate Calculator</Trans></Link></li>
-                  <li className="nav-item"> <Link className={this.isPathActive('/finances/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Credit History</Trans></Link></li>
+                  <li className="nav-item"> <Link className={this.isPathActive('/finances/transactions-summary') ? 'nav-link active' : 'nav-link'} to="/finances/transactions-summary"><Trans>Transactions Summary</Trans></Link></li>
+                  {/* <li className="nav-item"> <Link className={this.isPathActive('/finances/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Credit History</Trans></Link></li>
                   <li className="nav-item"> <Link className={this.isPathActive('/finances/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Payment History</Trans></Link></li>
-                  <li className="nav-item"> <Link className={this.isPathActive('/finances/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Wallet Recharge History</Trans></Link></li>
+                  <li className="nav-item"> <Link className={this.isPathActive('/finances/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Wallet Recharge History</Trans></Link></li> */}
                   <li className="nav-item"> <Link className={this.isPathActive('/finances/typography') ? 'nav-link active' : 'nav-link'} ><Trans>Invoice</Trans></Link></li>
                 </ul>
               </div>

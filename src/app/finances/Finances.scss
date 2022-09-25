@@ -1,0 +1,55 @@
+.transaction-summary {
+    .topBar {
+        margin-bottom: 22px;
+    }
+    .summary-table {
+        .columns {
+            display: flex;
+            justify-content: space-between;
+
+            .table-item {
+                border-top: 1px solid #2c2e33;
+                color: #6c7293;
+                font-size: 0.875rem;
+                line-height: 1;
+                min-width: 120px;
+                padding: 1rem;
+            }
+
+            .head-item {
+                border-top: none;
+                font-weight: 500;
+            }
+
+            .flex-1 {
+                flex: 1;
+            }
+
+            .flex-2 {
+                flex: 2.5;
+            }
+        }
+    }
+
+    .pagination-section {
+        display: flex;
+        justify-content: flex-end;
+
+        .active {
+            .page-link {
+                background-color: #fff;
+            }
+        }
+
+        .page-link {
+            position: relative;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            margin-left: -1px;
+            line-height: 1.25;
+            color: #6c7293;
+            background-color: #000000;
+            border: 1px solid #6c7293;
+        }
+    }
+}

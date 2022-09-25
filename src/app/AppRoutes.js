@@ -8,9 +8,11 @@ const CreateOrders = lazy(() => import('./orders/CreateOrders'));
 const ManageOrders = lazy(() => import('./orders/ManageOrders'));
 const Address = lazy(() => import('./orders/Address'));
 const KYC = lazy(() => import('./KYC/Kyc'));
+const Discrepancy = lazy(() => import('./weight-discrepancy/Discrepancy'));
 const Calculator = lazy(() => import('./finances/Calculator'));
-const Priorirty = lazy(()=> import('./tools/Priority'));
+const TransactionsSummary = lazy(() => import('./finances/TransactionsSummary'));
 const Customize = lazy(()=> import('./tools/Customize')); 
+const Priorirty = lazy(()=> import('./tools/Priority')); 
 const Channel = lazy(()=> import('./settings/Channel'));
 
 const Buttons = lazy(() => import('./basic-ui/Buttons'));
@@ -43,7 +45,9 @@ class AppRoutes extends Component {
           <Route exact path="/address" component={Address} />
           <Route exact path="/address/:id" component={Address} />
           <Route exact path="/kyc" component={KYC} />
+          <Route exact path="/weight-discrepancy" component={Discrepancy} />
           <Route exact path="/finances/calculator" component={Calculator} />
+          <Route exact path="/finances/transactions-summary" component={TransactionsSummary} />
           <Route exact path="/tools/priority" component={Priorirty} />
           <Route exact path="/tools/customize" component={Customize} />
           <Route exact path="/settings/channel" component={Channel} />

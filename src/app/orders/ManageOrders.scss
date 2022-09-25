@@ -60,6 +60,12 @@ a.cancelText {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    ul{
+        list-style:none;
+        padding:0;
+        margin:0;
+        display: flex;
+    }
 }
 .page-link {
     position: relative;

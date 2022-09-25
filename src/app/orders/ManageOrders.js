@@ -6,13 +6,17 @@ import Pagination from "react-bootstrap/Pagination";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import { trackPromise } from "react-promise-tracker";
+import ReactPaginate from "react-paginate";
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const ORDER_URL = `${API_URL}/order/list`;
 export const UPDATE_ORDER = `${API_URL}/order`;
 export const SHIPPING_LABEL = `${API_URL}/document/shipping_label`;
+export const EXPORT_URL = `${API_URL}/order/export`;
 
 const ManageOrders = () => {
+  const [pageCount, setPageCount] = useState(0);
+  const [itemlength, setItemlength] = useState(0);
   const [total, setTotal] = useState(10);
   const [list, setList] = useState();
   const [selectedList, setSelectedList] = useState([]);
@@ -25,16 +29,24 @@ const ManageOrders = () => {
     const params = status ? '?total='+total+'&status='+status : '?total='+total;
     trackPromise(axios.get(ORDER_URL+params).then(res => {
       setList(res.data);
+      setItemlength(res.headers.totalcount);
+      setPageCount(Math.ceil(res.headers.totalcount / total));
     }))
-  }, [status]);
+  }, [status,total]);
   const exportToExcel = () => {
-    // Acquire Data (reference to the HTML table)
-    var table_elt = table.current;
-    // Extract Data (create a workbook object from the table)
-    var workbook = XLSX.utils.table_to_book(table_elt);
-
-    // Package and Release Data (`writeFile` tries to write and save an XLS file)
-    XLSX.writeFile(workbook, "Report.xls");
+    trackPromise(axios.post(EXPORT_URL,{order_ids: selectedList}).then(res=>{
+        var workbook = XLSX.utils.book_new();
+        // Extract Data (create a workbook object from the table)
+        var ws = XLSX.utils.json_to_sheet(res.data);
+        XLSX.utils.book_append_sheet(workbook, ws, 'Order List');
+        // Package and Release Data (`writeFile` tries to write and save an XLS file)
+        XLSX.writeFile(workbook, "Report.xls");
+        setToast(true);
+      },
+      e=>{
+        setFailToast(true);
+      }))
+    
   };
   const shipOrderAll = () => {
       trackPromise(axios.put(UPDATE_ORDER,{order_ids: selectedList},
@@ -122,12 +134,15 @@ const ManageOrders = () => {
     setToast(false);
     setFailToast(false);
   };
-  const loadMore = () => {
-    trackPromise(axios.get(ORDER_URL+'?total='+parseInt(total+10)).then(res => {
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * total) % itemlength;
+    const params = status ? '?total='+total+'&status='+status+'&skip='+newOffset : '?total='+total+'&skip='+newOffset ;
+    trackPromise(axios.get(ORDER_URL+params).then(res => {
       setList(res.data);
-      setTotal(total+10);
+      setItemlength(res.headers.totalcount);
+      setPageCount(Math.ceil(res.headers.totalcount / total));
     }))
-  }
+  };
   return (
     // <div className="row">
     //     <div className="col-12 grid-margin">
@@ -284,38 +299,39 @@ const ManageOrders = () => {
                   </tbody>
                 </table>
               </div>
-              <div className="col-md-6 offset-md-5" onClick={loadMore}>
-                <button className="btn btn-primary">Load More</button>
-              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* <div className="row">
+      <div className="row">
         <div className="col-12">
           <div className="pagination-wrap">
             <div className="showTables">
               <p>Show</p>
-              <select class="form-control" id="exampleSelectGender">
-                <option>1</option>
-                <option>2</option>
+              <select class="form-control" id="exampleSelectGender" onChange={(e)=>setTotal(e.target.value)}>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={40}>40</option>
+                <option value={80}>80</option>
               </select>
             </div>
 
-            <Pagination>
-              <Pagination.Prev />
-              <Pagination.Item>{1}</Pagination.Item>
-              <Pagination.Item>{2}</Pagination.Item>
-              <Pagination.Item>{3}</Pagination.Item>
-              <Pagination.Item>{4}</Pagination.Item>
-              <Pagination.Item>{5}</Pagination.Item>
-
-              <Pagination.Next />
-            </Pagination>
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel=">"
+              onPageChange={handlePageClick}
+              pageRangeDisplayed={0}
+              pageCount={pageCount}
+              previousLabel="<"
+              renderOnZeroPageCount={null}
+              pageLinkClassName="page-link"
+              nextClassName="page-link"
+              previousClassName="page-link"
+            />  
           </div>
         </div>
-      </div> */}
+      </div>
 
       {toast && (<Toast onClose={navigate} className="toast-success" autohide={true}>
           <Toast.Header>

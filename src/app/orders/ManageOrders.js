@@ -22,10 +22,11 @@ const ManageOrders = () => {
   const [failtoast, setFailToast] = useState(false);
   const table = useRef();
   useEffect(() => {
-    trackPromise(axios.get(ORDER_URL+'?total='+total).then(res => {
+    const params = status ? '?total='+total+'&status='+status : '?total='+total;
+    trackPromise(axios.get(ORDER_URL+params).then(res => {
       setList(res.data);
     }))
-  }, []);
+  }, [status]);
   const exportToExcel = () => {
     // Acquire Data (reference to the HTML table)
     var table_elt = table.current;
@@ -217,7 +218,6 @@ const ManageOrders = () => {
                   </thead>
                   <tbody>
                     {list && list
-                      .filter(ele => !status || ele.status == status)
                       .map(ele => (
                         <tr>
                           <td>
@@ -256,7 +256,7 @@ const ManageOrders = () => {
                             <div className="custdetsils">
                               <p>{ele.customer.name}</p>
                               <p>Ph: {ele.customer.mobile_no}</p>
-                              <a href="#">VIEW / EDIT DETAILS</a>
+                              {/* <a href="#">VIEW / EDIT DETAILS</a> */}
                             </div>)}
                           </td>
                           <td>{ele.status=='TO_BE_PROCESSED'?'Approved':ele.status}</td>

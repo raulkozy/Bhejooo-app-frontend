@@ -328,6 +328,7 @@ const ManageOrders = () => {
               pageLinkClassName="page-link"
               nextClassName="page-link"
               previousClassName="page-link"
+              activeLinkClassName="active-link"
             />  
           </div>
         </div>

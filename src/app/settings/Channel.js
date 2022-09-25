@@ -1,5 +1,5 @@
 import { Formik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { Toast } from "react-bootstrap";
 import { trackPromise } from "react-promise-tracker";
@@ -7,10 +7,18 @@ import { trackPromise } from "react-promise-tracker";
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const CHANNEL_INTEGRATION = `${API_URL}/integration/create`;
 export const CHANNEL_FETCHORDERS = `${API_URL}/integration/fetchOrders`;
+export const INTEGRATION_UPDATE = `${API_URL}/integration/update`;
+export const INTEGRATION = `${API_URL}/integration`;
 
 const Channel = () => {
     const [toast, setToast] = useState(false);
     const [failtoast, setFailToast] = useState(false);
+    const [form, setForm] = useState({});
+    useEffect(()=>{
+        trackPromise(axios.get(INTEGRATION).then(res=>{
+            setForm(res.data[0]);
+        }))
+    },[])
     const navigate = () => {
         setToast(false);
         setFailToast(false);
@@ -26,28 +34,52 @@ const Channel = () => {
                         <div className="card-body">
 
                             <Formik
-                                initialValues={{}}
+                                initialValues={form}
                                 enableReinitialize
                                 onSubmit={(values, { setSubmitting }) => {
-                                        trackPromise(axios.post(CHANNEL_INTEGRATION, values,{
-                                            headers:{
-                                                provider: 'SHOPIFY'
-                                            }
-                                        }).then(async (res) => {
-                                            setSubmitting(false);
-                                            setToast(true);
-                                            trackPromise(axios.get(CHANNEL_FETCHORDERS,{
-                                                provider: 'SHOPIFY'
-                                            }).then(res=>{
+                                        if(values.id)
+                                        {
+                                            trackPromise(axios.put(INTEGRATION_UPDATE, values,{
+                                                headers:{
+                                                    provider: 'SHOPIFY'
+                                                }
+                                            }).then(async (res) => {
+                                                setSubmitting(false);
                                                 setToast(true);
-                                            },
-                                            err=>{
+                                                trackPromise(axios.get(CHANNEL_FETCHORDERS,{
+                                                    provider: 'SHOPIFY'
+                                                }).then(res=>{
+                                                    setToast(true);
+                                                },
+                                                err=>{
+                                                    setFailToast(true);
+                                                }))
+                                            }, err => {
                                                 setFailToast(true);
+                                                setSubmitting(false);
+                                            }))    
+                                        } 
+                                        else {
+                                            trackPromise(axios.post(CHANNEL_INTEGRATION, values,{
+                                                headers:{
+                                                    provider: 'SHOPIFY'
+                                                }
+                                            }).then(async (res) => {
+                                                setSubmitting(false);
+                                                setToast(true);
+                                                trackPromise(axios.get(CHANNEL_FETCHORDERS,{
+                                                    provider: 'SHOPIFY'
+                                                }).then(res=>{
+                                                    setToast(true);
+                                                },
+                                                err=>{
+                                                    setFailToast(true);
+                                                }))
+                                            }, err => {
+                                                setFailToast(true);
+                                                setSubmitting(false);
                                             }))
-                                        }, err => {
-                                            setFailToast(true);
-                                            setSubmitting(false);
-                                        }))
+                                        }
                                 }}
                                 render=
                                 {({
@@ -73,6 +105,7 @@ const Channel = () => {
                                                     className="form-control"
                                                     name="entity_name"
                                                     onChange={handleChange}
+                                                    defaultValue={values.entity_name}
                                                 />
                                             </div>
                                         </div>
@@ -89,6 +122,7 @@ const Channel = () => {
                                                     className="form-control"
                                                     name="access_token"
                                                     onChange={handleChange}
+                                                    defaultValue={values.access_token}
                                                 />
                                             </div>
                                         </div>

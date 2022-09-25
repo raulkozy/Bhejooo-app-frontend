@@ -60,6 +60,12 @@ a.cancelText {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    ul{
+        list-style:none;
+        padding:0;
+        margin:0;
+        display: flex;
+    }
 }
 .page-link {
     position: relative;
@@ -69,6 +75,15 @@ a.cancelText {
     line-height: 1.25;
     color: #6c7293;
     background-color: #000000;
+    border: 1px solid #6c7293;
+}
+.active-link{
+    position: relative;
+    display: block;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #6c7293 !important;
+    background-color: #fff !important;
     border: 1px solid #6c7293;
 }
 .showTables{

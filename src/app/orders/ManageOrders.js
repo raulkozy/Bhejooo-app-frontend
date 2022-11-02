@@ -256,7 +256,7 @@ const ManageOrders = () => {
                           </td>
                           <td>{ele.tracking_id}</td>
                           <td> {new Date(ele.created_at).toLocaleString()} </td>
-                          <td> Manual </td>
+                          <td> {ele.channel} </td>
                           <td>
                             <div className="proddetailsMain">
                               <div className="proddetails">

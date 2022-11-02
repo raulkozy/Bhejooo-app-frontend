@@ -3,6 +3,7 @@ import { Dropdown } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import { Trans } from 'react-i18next';
 import axios from 'axios';
+import AddMoneyModal from './modal/AddMoneyModal';
 
 const API_URL = process.env.API_URL || 'https://api.bhejooo.com';
 export const GET_BALANCE = `${API_URL}/finance/get-Balance`;
@@ -11,6 +12,7 @@ const Navbar = () => {
   const history = useHistory();
   const [wallet, setwallet] = useState();
   const [credit, setcredit] = useState();
+  const [show, setShow] = useState(false);
   useEffect(()=>{
     axios.get(GET_BALANCE).then(res=>{
       setwallet(res.data.cash_balance);
@@ -28,7 +30,7 @@ const Navbar = () => {
     document.querySelector('.right-sidebar').classList.toggle('open');
   }
     return (
-      <nav className="navbar p-0 fixed-top d-flex flex-row">
+      <><nav className="navbar p-0 fixed-top d-flex flex-row">
         <div className="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
           <Link className="navbar-brand brand-logo-mini"><img src={require('../../assets/images/Blogo.png')} alt="logo" /></Link>
         </div>
@@ -45,92 +47,92 @@ const Navbar = () => {
           </ul>
           <ul className="navbar-nav navbar-nav-right">
             {/* <Dropdown alignRight as="li" className="nav-item d-none d-lg-block">
-                <Dropdown.Toggle className="nav-link btn btn-success create-new-button no-caret">
-                + <Trans>Create New Project</Trans>
-                </Dropdown.Toggle>
+        <Dropdown.Toggle className="nav-link btn btn-success create-new-button no-caret">
+        + <Trans>Create New Project</Trans>
+        </Dropdown.Toggle>
 
-                <Dropdown.Menu className="navbar-dropdown preview-list create-new-dropdown-menu">
-                  <h6 className="p-3 mb-0"><Trans>Projects</Trans></h6>
-                  <Dropdown.Divider />
-                  <Dropdown.Item href="!#" onClick={evt =>evt.preventDefault()} className="preview-item">
-                    <div className="preview-thumbnail">
-                      <div className="preview-icon bg-dark rounded-circle">
-                        <i className="mdi mdi-file-outline text-primary"></i>
-                      </div>
-                    </div>
-                    <div className="preview-item-content">
-                      <p className="preview-subject ellipsis mb-1"><Trans>Software Development</Trans></p>
-                    </div>
-                  </Dropdown.Item>
-                  <Dropdown.Divider />
-                  <Dropdown.Item href="!#" onClick={evt =>evt.preventDefault()} className="preview-item">
-                    <div className="preview-thumbnail">
-                      <div className="preview-icon bg-dark rounded-circle">
-                        <i className="mdi mdi-web text-info"></i>
-                      </div>
-                    </div>
-                    <div className="preview-item-content">
-                      <p className="preview-subject ellipsis mb-1"><Trans>UI Development</Trans></p>
-                    </div>
-                  </Dropdown.Item>
-                  <Dropdown.Divider />
-                  <Dropdown.Item href="!#" onClick={evt =>evt.preventDefault()} className="preview-item">
-                    <div className="preview-thumbnail">
-                      <div className="preview-icon bg-dark rounded-circle">
-                        <i className="mdi mdi-layers text-danger"></i>
-                      </div>
-                    </div>
-                    <div className="preview-item-content">
-                      <p className="preview-subject ellipsis mb-1"><Trans>Software Testing</Trans></p>
-                    </div>
-                  </Dropdown.Item>
-                  <Dropdown.Divider />
-                  <p className="p-3 mb-0 text-center"><Trans>See all projects</Trans></p>
-                </Dropdown.Menu>
-              </Dropdown> */}
+        <Dropdown.Menu className="navbar-dropdown preview-list create-new-dropdown-menu">
+          <h6 className="p-3 mb-0"><Trans>Projects</Trans></h6>
+          <Dropdown.Divider />
+          <Dropdown.Item href="!#" onClick={evt =>evt.preventDefault()} className="preview-item">
+            <div className="preview-thumbnail">
+              <div className="preview-icon bg-dark rounded-circle">
+                <i className="mdi mdi-file-outline text-primary"></i>
+              </div>
+            </div>
+            <div className="preview-item-content">
+              <p className="preview-subject ellipsis mb-1"><Trans>Software Development</Trans></p>
+            </div>
+          </Dropdown.Item>
+          <Dropdown.Divider />
+          <Dropdown.Item href="!#" onClick={evt =>evt.preventDefault()} className="preview-item">
+            <div className="preview-thumbnail">
+              <div className="preview-icon bg-dark rounded-circle">
+                <i className="mdi mdi-web text-info"></i>
+              </div>
+            </div>
+            <div className="preview-item-content">
+              <p className="preview-subject ellipsis mb-1"><Trans>UI Development</Trans></p>
+            </div>
+          </Dropdown.Item>
+          <Dropdown.Divider />
+          <Dropdown.Item href="!#" onClick={evt =>evt.preventDefault()} className="preview-item">
+            <div className="preview-thumbnail">
+              <div className="preview-icon bg-dark rounded-circle">
+                <i className="mdi mdi-layers text-danger"></i>
+              </div>
+            </div>
+            <div className="preview-item-content">
+              <p className="preview-subject ellipsis mb-1"><Trans>Software Testing</Trans></p>
+            </div>
+          </Dropdown.Item>
+          <Dropdown.Divider />
+          <p className="p-3 mb-0 text-center"><Trans>See all projects</Trans></p>
+        </Dropdown.Menu>
+      </Dropdown> */}
             <Dropdown alignRight as="li" className="nav-item d-none d-lg-block">
-              <Dropdown.Toggle className="nav-link btn btn-primary create-new-button no-caret">
+              <Dropdown.Toggle className="nav-link btn btn-primary create-new-button no-caret" onClick={()=>setShow(!show)}>
                 <i className="mdi mdi-currency-inr"></i> {parseInt(wallet).toFixed(2)}
               </Dropdown.Toggle>
 
               {/* <Dropdown.Menu className="navbar-dropdown preview-list create-new-dropdown-menu">
-                <h6 className="p-3 mb-0"><Trans>Projects</Trans></h6>
-                <Dropdown.Divider />
-                <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
-                  <div className="preview-thumbnail">
-                    <div className="preview-icon bg-dark rounded-circle">
-                      <i className="mdi mdi-file-outline text-primary"></i>
-                    </div>
-                  </div>
-                  <div className="preview-item-content">
-                    <p className="preview-subject ellipsis mb-1"><Trans>Software Development</Trans></p>
-                  </div>
-                </Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
-                  <div className="preview-thumbnail">
-                    <div className="preview-icon bg-dark rounded-circle">
-                      <i className="mdi mdi-web text-info"></i>
-                    </div>
-                  </div>
-                  <div className="preview-item-content">
-                    <p className="preview-subject ellipsis mb-1"><Trans>UI Development</Trans></p>
-                  </div>
-                </Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
-                  <div className="preview-thumbnail">
-                    <div className="preview-icon bg-dark rounded-circle">
-                      <i className="mdi mdi-layers text-danger"></i>
-                    </div>
-                  </div>
-                  <div className="preview-item-content">
-                    <p className="preview-subject ellipsis mb-1"><Trans>Software Testing</Trans></p>
-                  </div>
-                </Dropdown.Item>
-                <Dropdown.Divider />
-                <p className="p-3 mb-0 text-center"><Trans>See all projects</Trans></p>
-              </Dropdown.Menu> */}
+      <h6 className="p-3 mb-0"><Trans>Projects</Trans></h6>
+      <Dropdown.Divider />
+      <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
+        <div className="preview-thumbnail">
+          <div className="preview-icon bg-dark rounded-circle">
+            <i className="mdi mdi-file-outline text-primary"></i>
+          </div>
+        </div>
+        <div className="preview-item-content">
+          <p className="preview-subject ellipsis mb-1"><Trans>Software Development</Trans></p>
+        </div>
+      </Dropdown.Item>
+      <Dropdown.Divider />
+      <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
+        <div className="preview-thumbnail">
+          <div className="preview-icon bg-dark rounded-circle">
+            <i className="mdi mdi-web text-info"></i>
+          </div>
+        </div>
+        <div className="preview-item-content">
+          <p className="preview-subject ellipsis mb-1"><Trans>UI Development</Trans></p>
+        </div>
+      </Dropdown.Item>
+      <Dropdown.Divider />
+      <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
+        <div className="preview-thumbnail">
+          <div className="preview-icon bg-dark rounded-circle">
+            <i className="mdi mdi-layers text-danger"></i>
+          </div>
+        </div>
+        <div className="preview-item-content">
+          <p className="preview-subject ellipsis mb-1"><Trans>Software Testing</Trans></p>
+        </div>
+      </Dropdown.Item>
+      <Dropdown.Divider />
+      <p className="p-3 mb-0 text-center"><Trans>See all projects</Trans></p>
+    </Dropdown.Menu> */}
             </Dropdown>
             <Dropdown alignRight as="li" className="nav-item d-none d-lg-block">
               <Dropdown.Toggle className="nav-link btn btn-warning create-new-button no-caret">
@@ -138,110 +140,110 @@ const Navbar = () => {
               </Dropdown.Toggle>
             </Dropdown>
             {/* <li className="nav-item d-none d-lg-block">
-              <a className="nav-link" href="!#" onClick={event => event.preventDefault()}>
-                <i className="mdi mdi-wallet"></i>
-              </a>
-            </li> */}
+      <a className="nav-link" href="!#" onClick={event => event.preventDefault()}>
+        <i className="mdi mdi-wallet"></i>
+      </a>
+    </li> */}
             {/* <Dropdown alignRight as="li" className="nav-item border-left" >
-              <Dropdown.Toggle as="a" className="nav-link count-indicator cursor-pointer">
-                <i className="mdi mdi-email"></i>
-                <span className="count bg-success"></span>
-              </Dropdown.Toggle>
-              <Dropdown.Menu className="navbar-dropdown preview-list">
-                <h6 className="p-3 mb-0"><Trans>Messages</Trans></h6>
-                <Dropdown.Divider />
-                <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
-                  <div className="preview-thumbnail">
-                    <div className="preview-icon bg-dark rounded-circle">
-                      <img src={require('../../assets/images/faces/face4.jpg')} alt="profile" className="rounded-circle profile-pic" />
-                    </div>
-                  </div>
-                  <div className="preview-item-content">
-                    <p className="preview-subject ellipsis mb-1"><Trans>Mark send you a message</Trans></p>
-                    <p className="text-muted mb-0"> 1 <Trans>Minutes ago</Trans> </p>
-                  </div>
-                </Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
-                  <div className="preview-thumbnail">
-                    <div className="preview-icon bg-dark rounded-circle">
-                      <img src={require('../../assets/images/faces/face2.jpg')} alt="profile" className="rounded-circle profile-pic" />
-                    </div>
-                  </div>
-                  <div className="preview-item-content">
-                    <p className="preview-subject ellipsis mb-1"><Trans>Cregh send you a message</Trans></p>
-                    <p className="text-muted mb-0"> 15 <Trans>Minutes ago</Trans> </p>
-                  </div>
-                </Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
-                  <div className="preview-thumbnail">
-                    <div className="preview-icon bg-dark rounded-circle">
-                      <img src={require('../../assets/images/faces/face3.jpg')} alt="profile" className="rounded-circle profile-pic" />
-                    </div>
-                  </div>
-                  <div className="preview-item-content">
-                    <p className="preview-subject ellipsis mb-1"><Trans>Profile picture updated</Trans></p>
-                    <p className="text-muted mb-0"> 18 <Trans>Minutes ago</Trans> </p>
-                  </div>
-                </Dropdown.Item>
-                <Dropdown.Divider />
-                <p className="p-3 mb-0 text-center">4 <Trans>new messages</Trans></p>
-              </Dropdown.Menu>
-            </Dropdown>
-            <Dropdown alignRight as="li" className="nav-item border-left">
-              <Dropdown.Toggle as="a" className="nav-link count-indicator cursor-pointer">
-                <i className="mdi mdi-bell"></i>
-                <span className="count bg-danger"></span>
-              </Dropdown.Toggle>
-              <Dropdown.Menu className="dropdown-menu navbar-dropdown preview-list">
-                <h6 className="p-3 mb-0"><Trans>Notifications</Trans></h6>
-                <Dropdown.Divider />
-                <Dropdown.Item className="dropdown-item preview-item" onClick={evt => evt.preventDefault()}>
-                  <div className="preview-thumbnail">
-                    <div className="preview-icon bg-dark rounded-circle">
-                      <i className="mdi mdi-calendar text-success"></i>
-                    </div>
-                  </div>
-                  <div className="preview-item-content">
-                    <p className="preview-subject mb-1"><Trans>Event today</Trans></p>
-                    <p className="text-muted ellipsis mb-0">
-                      <Trans>Just a reminder that you have an event today</Trans>
-                    </p>
-                  </div>
-                </Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item className="dropdown-item preview-item" onClick={evt => evt.preventDefault()}>
-                  <div className="preview-thumbnail">
-                    <div className="preview-icon bg-dark rounded-circle">
-                      <i className="mdi mdi-settings text-danger"></i>
-                    </div>
-                  </div>
-                  <div className="preview-item-content">
-                    <h6 className="preview-subject mb-1"><Trans>Settings</Trans></h6>
-                    <p className="text-muted ellipsis mb-0">
-                      <Trans>Update dashboard</Trans>
-                    </p>
-                  </div>
-                </Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item className="dropdown-item preview-item" onClick={evt => evt.preventDefault()}>
-                  <div className="preview-thumbnail">
-                    <div className="preview-icon bg-dark rounded-circle">
-                      <i className="mdi mdi-link-variant text-warning"></i>
-                    </div>
-                  </div>
-                  <div className="preview-item-content">
-                    <h6 className="preview-subject mb-1"><Trans>Launch Admin</Trans></h6>
-                    <p className="text-muted ellipsis mb-0">
-                      <Trans>New admin wow</Trans>!
-                    </p>
-                  </div>
-                </Dropdown.Item>
-                <Dropdown.Divider />
-                <p className="p-3 mb-0 text-center"><Trans>See all notifications</Trans></p>
-              </Dropdown.Menu>
-            </Dropdown> */}
+      <Dropdown.Toggle as="a" className="nav-link count-indicator cursor-pointer">
+        <i className="mdi mdi-email"></i>
+        <span className="count bg-success"></span>
+      </Dropdown.Toggle>
+      <Dropdown.Menu className="navbar-dropdown preview-list">
+        <h6 className="p-3 mb-0"><Trans>Messages</Trans></h6>
+        <Dropdown.Divider />
+        <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
+          <div className="preview-thumbnail">
+            <div className="preview-icon bg-dark rounded-circle">
+              <img src={require('../../assets/images/faces/face4.jpg')} alt="profile" className="rounded-circle profile-pic" />
+            </div>
+          </div>
+          <div className="preview-item-content">
+            <p className="preview-subject ellipsis mb-1"><Trans>Mark send you a message</Trans></p>
+            <p className="text-muted mb-0"> 1 <Trans>Minutes ago</Trans> </p>
+          </div>
+        </Dropdown.Item>
+        <Dropdown.Divider />
+        <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
+          <div className="preview-thumbnail">
+            <div className="preview-icon bg-dark rounded-circle">
+              <img src={require('../../assets/images/faces/face2.jpg')} alt="profile" className="rounded-circle profile-pic" />
+            </div>
+          </div>
+          <div className="preview-item-content">
+            <p className="preview-subject ellipsis mb-1"><Trans>Cregh send you a message</Trans></p>
+            <p className="text-muted mb-0"> 15 <Trans>Minutes ago</Trans> </p>
+          </div>
+        </Dropdown.Item>
+        <Dropdown.Divider />
+        <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
+          <div className="preview-thumbnail">
+            <div className="preview-icon bg-dark rounded-circle">
+              <img src={require('../../assets/images/faces/face3.jpg')} alt="profile" className="rounded-circle profile-pic" />
+            </div>
+          </div>
+          <div className="preview-item-content">
+            <p className="preview-subject ellipsis mb-1"><Trans>Profile picture updated</Trans></p>
+            <p className="text-muted mb-0"> 18 <Trans>Minutes ago</Trans> </p>
+          </div>
+        </Dropdown.Item>
+        <Dropdown.Divider />
+        <p className="p-3 mb-0 text-center">4 <Trans>new messages</Trans></p>
+      </Dropdown.Menu>
+    </Dropdown>
+    <Dropdown alignRight as="li" className="nav-item border-left">
+      <Dropdown.Toggle as="a" className="nav-link count-indicator cursor-pointer">
+        <i className="mdi mdi-bell"></i>
+        <span className="count bg-danger"></span>
+      </Dropdown.Toggle>
+      <Dropdown.Menu className="dropdown-menu navbar-dropdown preview-list">
+        <h6 className="p-3 mb-0"><Trans>Notifications</Trans></h6>
+        <Dropdown.Divider />
+        <Dropdown.Item className="dropdown-item preview-item" onClick={evt => evt.preventDefault()}>
+          <div className="preview-thumbnail">
+            <div className="preview-icon bg-dark rounded-circle">
+              <i className="mdi mdi-calendar text-success"></i>
+            </div>
+          </div>
+          <div className="preview-item-content">
+            <p className="preview-subject mb-1"><Trans>Event today</Trans></p>
+            <p className="text-muted ellipsis mb-0">
+              <Trans>Just a reminder that you have an event today</Trans>
+            </p>
+          </div>
+        </Dropdown.Item>
+        <Dropdown.Divider />
+        <Dropdown.Item className="dropdown-item preview-item" onClick={evt => evt.preventDefault()}>
+          <div className="preview-thumbnail">
+            <div className="preview-icon bg-dark rounded-circle">
+              <i className="mdi mdi-settings text-danger"></i>
+            </div>
+          </div>
+          <div className="preview-item-content">
+            <h6 className="preview-subject mb-1"><Trans>Settings</Trans></h6>
+            <p className="text-muted ellipsis mb-0">
+              <Trans>Update dashboard</Trans>
+            </p>
+          </div>
+        </Dropdown.Item>
+        <Dropdown.Divider />
+        <Dropdown.Item className="dropdown-item preview-item" onClick={evt => evt.preventDefault()}>
+          <div className="preview-thumbnail">
+            <div className="preview-icon bg-dark rounded-circle">
+              <i className="mdi mdi-link-variant text-warning"></i>
+            </div>
+          </div>
+          <div className="preview-item-content">
+            <h6 className="preview-subject mb-1"><Trans>Launch Admin</Trans></h6>
+            <p className="text-muted ellipsis mb-0">
+              <Trans>New admin wow</Trans>!
+            </p>
+          </div>
+        </Dropdown.Item>
+        <Dropdown.Divider />
+        <p className="p-3 mb-0 text-center"><Trans>See all notifications</Trans></p>
+      </Dropdown.Menu>
+    </Dropdown> */}
             <Dropdown alignRight as="li" className="nav-item">
               <Dropdown.Toggle as="a" className="nav-link cursor-pointer no-caret">
                 <div className="navbar-profile">
@@ -265,15 +267,15 @@ const Navbar = () => {
                   </div>
                 </Dropdown.Item>
                 {/* <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
-                  <div className="preview-thumbnail">
-                    <div className="preview-icon bg-dark rounded-circle">
-                      <i className="mdi mdi-settings text-success"></i>
-                    </div>
-                  </div>
-                  <div className="preview-item-content">
-                    <p className="preview-subject mb-1"><Trans>Settings</Trans></p>
-                  </div>
-                </Dropdown.Item> */}
+      <div className="preview-thumbnail">
+        <div className="preview-icon bg-dark rounded-circle">
+          <i className="mdi mdi-settings text-success"></i>
+        </div>
+      </div>
+      <div className="preview-item-content">
+        <p className="preview-subject mb-1"><Trans>Settings</Trans></p>
+      </div>
+    </Dropdown.Item> */}
                 <Dropdown.Divider />
                 <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
                   <div className="preview-thumbnail">
@@ -294,7 +296,7 @@ const Navbar = () => {
             <span className="mdi mdi-format-line-spacing"></span>
           </button>
         </div>
-      </nav>
+      </nav>{show && (<AddMoneyModal />)}</>
     );
 }
 
